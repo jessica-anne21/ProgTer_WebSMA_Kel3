@@ -1,0 +1,56 @@
+/* General Styles */
+body {
+    font-family: 'Roboto', sans-serif;
+}
+
+/* Navbar Styles */
+.bg-navy {
+    background-color: #001F3F !important; /* Navy color */
+}
+
+.navbar-brand {
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+/* Sidebar Styles */
+.sidebar {
+    height: 100vh;
+    position: fixed;
+}
+
+.sidebar .nav-link {
+    color: #b8c1ec;
+}
+
+.sidebar .nav-link.active {
+    background-color: #001F3F;
+    color: white;
+}
+
+.sidebar .nav-link:hover {
+    background-color: #003366;
+    color: white;
+}
+
+/* Main Content Styles */
+main {
+    margin-left: 16.66%;
+    padding: 20px;
+}
+
+.card {
+    border-radius: 15px;
+}
+
+/* Responsive Layout for Small Devices */
+@media (max-width: 768px) {
+    main {
+        margin-left: 0;
+    }
+
+    .sidebar {
+        position: relative;
+        height: auto;
+    }
+}
