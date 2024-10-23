@@ -76,6 +76,11 @@ $total_subjects = $stmt_subjects->fetch(PDO::FETCH_ASSOC)['total_subjects'];
                             </a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link" href="manage_grades.php">
+                                <i class="fas fa-chart-line"></i> Manage Grades
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link" href="manage_schedule.php">
                                 <i class="fas fa-calendar"></i> Schedule
                             </a>
