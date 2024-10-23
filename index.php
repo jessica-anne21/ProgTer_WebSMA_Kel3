@@ -1,10 +1,9 @@
 <?php include('header.php'); ?>
 
-<!-- Make sure the entire content fits the screen -->
 <div class="d-flex flex-column min-vh-100">
 
     <!--Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #001f3f;"> <!-- Navy color -->
+    <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #001f3f;"> 
         <a class="navbar-brand" href="#"><b>School Management System</b></a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent-333"
             aria-controls="navbarSupportedContent-333" aria-expanded="false" aria-label="Toggle navigation">
@@ -17,7 +16,7 @@
     </nav>
     <!--/.Navbar -->
 
-    <!-- Hero Section with Gradient Background and Circular Buttons -->
+
     <div class="flex-grow-1 d-flex align-items-center py-5 shadow" style="background: linear-gradient(-45deg, #001f3f 50%, transparent 50%);">
         <div class="container-fluid my-2">
             <div class="row">
@@ -29,7 +28,7 @@
                     </p>
                 </div>
 
-                <!-- Circular Buttons on the Right -->
+
                 <div class="col-lg-6 d-flex justify-content-end align-items-center">
                     <div class="text-center mx-3">
                         <!-- Admin Button -->
@@ -54,10 +53,9 @@
         </div>
     </div>
 
-    <?php include('footer.php'); ?> <!-- Include the footer -->
+    <?php include('footer.php'); ?> 
 </div>
 
-<!-- Custom CSS for Circular Buttons -->
 <style>
     .btn-circle {
         width: 100px;
