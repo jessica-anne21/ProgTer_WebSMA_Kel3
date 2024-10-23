@@ -38,6 +38,7 @@ if (isset($_GET['delete'])) {
     <meta charset="UTF-8">
     <title>Manajemen Siswa</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"> <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="admin_style.css"> <!-- Custom CSS for the page -->
 </head>
 <body>
@@ -88,15 +89,18 @@ if (isset($_GET['delete'])) {
                             </a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link" href="manage_grades.php">
+                                <i class="fas fa-chart-line"></i> Manage Grades
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link" href="manage_schedule.php">
-                                <i class="fas fa-calendar"></i>
-                                Schedule
+                                <i class="fas fa-calendar"></i> Schedule
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="report_card">
-                                <i class="fas fa-chart-bar"></i>
-                                Reports
+                                <i class="fas fa-chart-bar"></i> Reports
                             </a>
                         </li>
                     </ul>
