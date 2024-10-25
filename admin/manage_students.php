@@ -1,5 +1,5 @@
 <?php
-include '../includes/db.php';
+include '../includes/db.php'; 
 session_start();
 
 if (!isset($_SESSION['user'])) {
@@ -11,14 +11,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $id = $_POST['id'] ?? null;
     $nama = $_POST['nama'];
     $kelas = $_POST['kelas'];
+    $alamat = $_POST['alamat'];
     $telepon = $_POST['telepon'];
 
     if ($id) {
-        $stmt = $pdo->prepare("UPDATE siswa SET nama = ?, kelas = ?, telepon = ? WHERE id = ?");
-        $stmt->execute([$nama, $kelas, $telepon, $id]);
+        // Update data siswa
+        $stmt = $pdo->prepare("UPDATE siswa SET nama = ?, kelas = ?, alamat = ?, telepon = ? WHERE id = ?");
+        $stmt->execute([$nama, $kelas, $alamat, $telepon, $id]);
     } else {
-        $stmt = $pdo->prepare("INSERT INTO siswa (nama, kelas, telepon) VALUES (?, ?, ?)");
-        $stmt->execute([$nama, $kelas, $telepon]);
+        // Tambah data siswa
+        $stmt = $pdo->prepare("INSERT INTO siswa (nama, kelas, alamat, telepon) VALUES (?, ?, ?, ?)");
+        $stmt->execute([$nama, $kelas, $alamat, $telepon]);
     }
     header('Location: manage_students.php');
 }
@@ -30,6 +33,15 @@ if (isset($_GET['delete'])) {
     $stmt->execute([$id]);
     header('Location: manage_students.php');
 }
+
+// Ambil data siswa untuk edit
+$student = null;
+if (isset($_GET['edit'])) {
+    $id = $_GET['edit'];
+    $stmt = $pdo->prepare("SELECT * FROM siswa WHERE id = ?");
+    $stmt->execute([$id]);
+    $student = $stmt->fetch(PDO::FETCH_ASSOC);
+}
 ?>
 
 <!DOCTYPE html>
@@ -38,8 +50,16 @@ if (isset($_GET['delete'])) {
     <meta charset="UTF-8">
     <title>Manajemen Siswa</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"> <!-- Font Awesome for icons -->
-    <link rel="stylesheet" href="admin_style.css"> <!-- Custom CSS for the page -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"> 
+    <link rel="stylesheet" href="admin_style.css">
+    <style>
+        #sidebarMenu {
+            position: sticky;
+            top: 0; 
+            height: 100vh; 
+            overflow-y: auto; 
+        }
+    </style>
 </head>
 <body>
     <!-- Navbar -->
@@ -68,7 +88,7 @@ if (isset($_GET['delete'])) {
             <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-dark sidebar collapse">
                 <div class="position-sticky pt-3">
                     <ul class="nav flex-column">
-                        <li class="nav-item">
+                    <li class="nav-item">
                             <a class="nav-link" href="admin_dashboard.php">
                                 <i class="fas fa-home"></i> Dashboard
                             </a>
@@ -99,7 +119,7 @@ if (isset($_GET['delete'])) {
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="report_card">
+                            <a class="nav-link" href="report_card.php">
                                 <i class="fas fa-chart-bar"></i> Reports
                             </a>
                         </li>
@@ -113,34 +133,38 @@ if (isset($_GET['delete'])) {
                     <h1 class="h2">Manajemen Siswa</h1>
                 </div>
 
-                <!-- Student Form Section -->
+                <!-- Form Siswa -->
                 <div class="card mb-4">
                     <div class="card-header">
-                        <?= isset($_GET['edit']) ? 'Edit Siswa' : 'Tambah Siswa' ?>
+                        <?= isset($student) ? 'Edit Siswa' : 'Tambah Siswa' ?>
                     </div>
                     <div class="card-body">
                         <form method="POST" class="row g-3">
-                            <input type="hidden" name="id" value="<?= $siswa['id'] ?? '' ?>">
-                            <div class="col-md-4">
+                            <input type="hidden" name="id" value="<?= $student['id'] ?? '' ?>">
+                            <div class="col-md-6">
                                 <label for="nama" class="form-label">Nama Siswa</label>
-                                <input type="text" class="form-control" name="nama" placeholder="Nama Siswa" value="<?= $siswa['nama'] ?? '' ?>" required>
+                                <input type="text" class="form-control" name="nama" placeholder="Nama Siswa" value="<?= $student['nama'] ?? '' ?>" required>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-6">
                                 <label for="kelas" class="form-label">Kelas</label>
-                                <input type="text" class="form-control" name="kelas" placeholder="Kelas" value="<?= $siswa['kelas'] ?? '' ?>" required>
-                            </div>
-                            <div class="col-md-4">
-                                <label for="telepon" class="form-label">Telepon</label>
-                                <input type="text" class="form-control" name="telepon" placeholder="Telepon" value="<?= $siswa['telepon'] ?? '' ?>">
+                                <input type="text" class="form-control" name="kelas" placeholder="Kelas" value="<?= $student['kelas'] ?? '' ?>" required>
                             </div>
                             <div class="col-12">
-                                <button type="submit" class="btn btn-primary"><?= isset($_GET['edit']) ? 'Update' : 'Tambah' ?> Siswa</button>
+                                <label for="alamat" class="form-label">Alamat</label>
+                                <textarea class="form-control" name="alamat" placeholder="Alamat"><?= $student['alamat'] ?? '' ?></textarea>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="telepon" class="form-label">Telepon</label>
+                                <input type="text" class="form-control" name="telepon" placeholder="Nomor Telepon" value="<?= $student['telepon'] ?? '' ?>">
+                            </div>
+                            <div class="col-12">
+                                <button type="submit" class="btn btn-primary"><?= isset($student) ? 'Update' : 'Tambah' ?> Siswa</button>
                             </div>
                         </form>
                     </div>
                 </div>
 
-                <!-- Students Table Section -->
+                <!-- Tabel Siswa -->
                 <div class="card">
                     <div class="card-header">
                         Daftar Siswa
@@ -152,6 +176,7 @@ if (isset($_GET['delete'])) {
                                     <th>ID</th>
                                     <th>Nama</th>
                                     <th>Kelas</th>
+                                    <th>Alamat</th>
                                     <th>Telepon</th>
                                     <th>Aksi</th>
                                 </tr>
@@ -164,6 +189,7 @@ if (isset($_GET['delete'])) {
                                             <td>{$row['id']}</td>
                                             <td>{$row['nama']}</td>
                                             <td>{$row['kelas']}</td>
+                                            <td>{$row['alamat']}</td>
                                             <td>{$row['telepon']}</td>
                                             <td>
                                                 <a href='manage_students.php?edit={$row['id']}' class='btn btn-warning btn-sm'>Edit</a>
@@ -180,7 +206,6 @@ if (isset($_GET['delete'])) {
         </div>
     </div>
 
-    <!-- Bootstrap JS and Icons -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.7/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
