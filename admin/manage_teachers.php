@@ -1,5 +1,5 @@
 <?php
-include '../includes/db.php';
+include '../includes/db.php'; 
 session_start();
 
 if (!isset($_SESSION['user'])) {
@@ -10,15 +10,16 @@ if (!isset($_SESSION['user'])) {
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $id = $_POST['id'] ?? null;
     $nama = $_POST['nama'];
-    $mata_pelajaran = $_POST['mata_pelajaran'];
     $telepon = $_POST['telepon'];
 
     if ($id) {
-        $stmt = $pdo->prepare("UPDATE guru SET nama = ?, mata_pelajaran = ?, telepon = ? WHERE id = ?");
-        $stmt->execute([$nama, $mata_pelajaran, $telepon, $id]);
+        // Update data guru
+        $stmt = $pdo->prepare("UPDATE guru SET nama = ?, telepon = ? WHERE id = ?");
+        $stmt->execute([$nama, $telepon, $id]);
     } else {
-        $stmt = $pdo->prepare("INSERT INTO guru (nama, mata_pelajaran, telepon) VALUES (?, ?, ?)");
-        $stmt->execute([$nama, $mata_pelajaran, $telepon]);
+        // Tambah data guru
+        $stmt = $pdo->prepare("INSERT INTO guru (nama, telepon) VALUES (?, ?)");
+        $stmt->execute([$nama, $telepon]);
     }
     header('Location: manage_teachers.php');
 }
@@ -30,6 +31,15 @@ if (isset($_GET['delete'])) {
     $stmt->execute([$id]);
     header('Location: manage_teachers.php');
 }
+
+// Ambil data guru untuk edit
+$teacher = null;
+if (isset($_GET['edit'])) {
+    $id = $_GET['edit'];
+    $stmt = $pdo->prepare("SELECT * FROM guru WHERE id = ?");
+    $stmt->execute([$id]);
+    $teacher = $stmt->fetch(PDO::FETCH_ASSOC);
+}
 ?>
 
 <!DOCTYPE html>
@@ -38,8 +48,16 @@ if (isset($_GET['delete'])) {
     <meta charset="UTF-8">
     <title>Manajemen Guru</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"> <!-- Font Awesome -->
-    <link rel="stylesheet" href="admin_style.css"> <!-- Custom CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"> 
+    <link rel="stylesheet" href="admin_style.css">
+    <style>
+        #sidebarMenu {
+            position: sticky;
+            top: 0; 
+            height: 100vh; 
+            overflow-y: auto; 
+        }
+    </style>
 </head>
 <body>
     <!-- Navbar -->
@@ -68,7 +86,7 @@ if (isset($_GET['delete'])) {
             <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-dark sidebar collapse">
                 <div class="position-sticky pt-3">
                     <ul class="nav flex-column">
-                        <li class="nav-item">
+                    <li class="nav-item">
                             <a class="nav-link" href="admin_dashboard.php">
                                 <i class="fas fa-home"></i> Dashboard
                             </a>
@@ -99,7 +117,7 @@ if (isset($_GET['delete'])) {
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="report_card">
+                            <a class="nav-link" href="report_card.php">
                                 <i class="fas fa-chart-bar"></i> Reports
                             </a>
                         </li>
@@ -113,34 +131,30 @@ if (isset($_GET['delete'])) {
                     <h1 class="h2">Manajemen Guru</h1>
                 </div>
 
-                <!-- Teacher Form Section -->
+                <!-- Form Guru -->
                 <div class="card mb-4">
                     <div class="card-header">
-                        <?= isset($_GET['edit']) ? 'Edit Guru' : 'Tambah Guru' ?>
+                        <?= isset($teacher) ? 'Edit Guru' : 'Tambah Guru' ?>
                     </div>
                     <div class="card-body">
                         <form method="POST" class="row g-3">
-                            <input type="hidden" name="id" value="<?= $guru['id'] ?? '' ?>">
-                            <div class="col-md-4">
+                            <input type="hidden" name="id" value="<?= $teacher['id'] ?? '' ?>">
+                            <div class="col-md-6">
                                 <label for="nama" class="form-label">Nama Guru</label>
-                                <input type="text" class="form-control" name="nama" placeholder="Nama Guru" value="<?= $guru['nama'] ?? '' ?>" required>
+                                <input type="text" class="form-control" name="nama" placeholder="Nama Guru" value="<?= $teacher['nama'] ?? '' ?>" required>
                             </div>
-                            <div class="col-md-4">
-                                <label for="mata_pelajaran" class="form-label">Mata Pelajaran</label>
-                                <input type="text" class="form-control" name="mata_pelajaran" placeholder="Mata Pelajaran" value="<?= $guru['mata_pelajaran'] ?? '' ?>" required>
-                            </div>
-                            <div class="col-md-4">
+                            <div class="col-md-6">
                                 <label for="telepon" class="form-label">Telepon</label>
-                                <input type="text" class="form-control" name="telepon" placeholder="Telepon" value="<?= $guru['telepon'] ?? '' ?>">
+                                <input type="text" class="form-control" name="telepon" placeholder="Nomor Telepon" value="<?= $teacher['telepon'] ?? '' ?>">
                             </div>
                             <div class="col-12">
-                                <button type="submit" class="btn btn-primary"><?= isset($_GET['edit']) ? 'Update' : 'Tambah' ?> Guru</button>
+                                <button type="submit" class="btn btn-primary"><?= isset($teacher) ? 'Update' : 'Tambah' ?> Guru</button>
                             </div>
                         </form>
                     </div>
                 </div>
 
-                <!-- Teachers Table Section -->
+                <!-- Tabel Guru -->
                 <div class="card">
                     <div class="card-header">
                         Daftar Guru
@@ -151,7 +165,6 @@ if (isset($_GET['delete'])) {
                                 <tr>
                                     <th>ID</th>
                                     <th>Nama</th>
-                                    <th>Mata Pelajaran</th>
                                     <th>Telepon</th>
                                     <th>Aksi</th>
                                 </tr>
@@ -163,7 +176,6 @@ if (isset($_GET['delete'])) {
                                     echo "<tr>
                                             <td>{$row['id']}</td>
                                             <td>{$row['nama']}</td>
-                                            <td>{$row['mata_pelajaran']}</td>
                                             <td>{$row['telepon']}</td>
                                             <td>
                                                 <a href='manage_teachers.php?edit={$row['id']}' class='btn btn-warning btn-sm'>Edit</a>
@@ -180,7 +192,6 @@ if (isset($_GET['delete'])) {
         </div>
     </div>
 
-    <!-- Bootstrap JS and Icons -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.7/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
