@@ -37,6 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['siswa_id'])) {
     <meta charset="UTF-8">
     <title>Report Card</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"> 
     <link rel="stylesheet" href="admin_style.css">
 </head>
 <body>
@@ -66,23 +67,40 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['siswa_id'])) {
             <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-dark sidebar collapse">
                 <div class="position-sticky pt-3">
                     <ul class="nav flex-column">
-                        <li class="nav-item">
-                            <a class="nav-link" href="admin_dashboard.php">Dashboard</a>
+                    <li class="nav-item">
+                            <a class="nav-link" href="admin_dashboard.php">
+                                <i class="fas fa-home"></i> Dashboard
+                            </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="manage_teachers.php">Manage Teachers</a>
+                            <a class="nav-link" href="manage_teachers.php">
+                                <i class="fas fa-users"></i> Manage Teachers
+                            </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="manage_students.php">Manage Students</a>
+                            <a class="nav-link" href="manage_students.php">
+                                <i class="fas fa-user-graduate"></i> Manage Students
+                            </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="manage_subjects.php">Manage Subjects</a>
+                            <a class="nav-link" href="manage_subjects.php">
+                                <i class="fas fa-book"></i> Manage Subjects
+                            </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="manage_grades.php">Manage Grades</a>
+                            <a class="nav-link" href="manage_grades.php">
+                                <i class="fas fa-chart-line"></i> Manage Grades
+                            </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link active" href="report_card.php">Report Card</a>
+                            <a class="nav-link" href="manage_schedule.php">
+                                <i class="fas fa-calendar"></i> Schedule
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="report_card.php">
+                                <i class="fas fa-chart-bar"></i> Reports
+                            </a>
                         </li>
                     </ul>
                 </div>
@@ -150,7 +168,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['siswa_id'])) {
         </div>
     </div>
 
-    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.7/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
