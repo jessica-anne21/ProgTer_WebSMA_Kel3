@@ -29,37 +29,66 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
-            background-color: #002147;
-            color: white;
+            background-color: #001f3f;
+            color: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
         }
-        .container {
+        .login-card {
             max-width: 400px;
-            margin-top: 100px;
-            padding: 20px;
-            background-color: rgba(0, 0, 0, 0.7); 
-            border-radius: 10px;
+            padding: 2rem;
+            border-radius: 15px;
+            background-color: #f8f9fa;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.3);
+            color: #001f3f;
+        }
+        .login-card .card-title {
+            font-weight: bold;
+            color: #001f3f;
+        }
+        .login-card .btn-primary {
+            background-color: #001f3f;
+            border: none;
+            width: 100%;
+        }
+        .login-card .btn-primary:hover {
+            background-color: #001537;
+        }
+        .register-link {
+            text-align: center;
+            display: block;
+            margin-top: 1rem;
+            color: #001f3f;
+            text-decoration: none;
+        }
+        .register-link:hover {
+            color: #001537;
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h2 class="mt-5">Login Guru</h2>
-        <?php if (isset($error)): ?>
-            <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
-        <?php endif; ?>
-        <form method="POST">
-            <div class="mb-3">
-                <label for="email" class="form-label">Email</label>
-                <input type="email" class="form-control" name="email" required>
-            </div>
-            <div class="mb-3">
-                <label for="password" class="form-label">Password</label>
-                <input type="password" class="form-control" name="password" required>
-            </div>
-            <button type="submit" class="btn btn-primary">Login</button>
-            <a href='register_guru.php'>Register Here</a>
-        </form>
-    </div>
+    <div class="login-card card">
+            <h2 class="card-title text-center">Login Guru</h2>
+            <?php if (isset($error)): ?>
+                <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
+            <?php endif; ?>
+            <form method="post">
+                <div class="form-group mb-3">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" class="form-control" required>
+                </div>
+                <div class="form-group mb-3">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" class="form-control" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Login</button>
+                <a href="register_guru.php" class="register-link">Register Now</a>
+            </form>
+        </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.7/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
