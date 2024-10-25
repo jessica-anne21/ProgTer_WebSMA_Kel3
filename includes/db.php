@@ -1,8 +1,8 @@
 <?php
 $host = 'localhost';
-$db_name = 'sekolah_sma';
-$username = 'root'; // default untuk XAMPP
-$password = ''; // kosongkan jika tidak ada password
+$db_name = 'sekolah';
+$username = 'root'; 
+$password = ''; 
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$db_name", $username, $password);
