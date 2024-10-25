@@ -25,8 +25,8 @@ $total_subjects = $stmt_subjects->fetch(PDO::FETCH_ASSOC)['total_subjects'];
     <meta charset="UTF-8">
     <title>Admin Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"> <!-- Font Awesome for icons -->
-    <link rel="stylesheet" href="admin_style.css"> <!-- Custom CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"> 
+    <link rel="stylesheet" href="admin_style.css"> 
 </head>
 <body>
     <!-- Navbar -->
@@ -86,7 +86,7 @@ $total_subjects = $stmt_subjects->fetch(PDO::FETCH_ASSOC)['total_subjects'];
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="report_card">
+                            <a class="nav-link" href="report_card.php">
                                 <i class="fas fa-chart-bar"></i> Reports
                             </a>
                         </li>
