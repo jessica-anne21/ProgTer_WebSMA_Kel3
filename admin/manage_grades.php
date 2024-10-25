@@ -40,8 +40,16 @@ if (isset($_GET['delete'])) {
     <meta charset="UTF-8">
     <title>Manajemen Nilai</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"> <!-- Font Awesome for icons -->
-    <link rel="stylesheet" href="admin_style.css"> <!-- Custom CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"> 
+    <link rel="stylesheet" href="admin_style.css"> 
+    <style>
+        #sidebarMenu {
+            position: sticky;
+            top: 0; 
+            height: 100vh; 
+            overflow-y: auto; 
+        }
+    </style>
 </head>
 <body>
     <!-- Navbar -->
@@ -70,7 +78,7 @@ if (isset($_GET['delete'])) {
             <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-dark sidebar collapse">
                 <div class="position-sticky pt-3">
                     <ul class="nav flex-column">
-                        <li class="nav-item">
+                    <li class="nav-item">
                             <a class="nav-link" href="admin_dashboard.php">
                                 <i class="fas fa-home"></i> Dashboard
                             </a>
@@ -101,7 +109,7 @@ if (isset($_GET['delete'])) {
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="report_card">
+                            <a class="nav-link" href="report_card.php">
                                 <i class="fas fa-chart-bar"></i> Reports
                             </a>
                         </li>
