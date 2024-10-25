@@ -1,5 +1,5 @@
 <?php
-include '../includes/db.php'; // Pastikan Anda sudah menghubungkan ke database
+include '../includes/db.php'; 
 session_start();
 
 if (!isset($_SESSION['user'])) {
