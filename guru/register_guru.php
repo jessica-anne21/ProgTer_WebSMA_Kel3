@@ -1,53 +1,53 @@
 <?php
-session_start();
-include('../includes/db.php'); // Include the database connection file
+include '../includes/db.php'; 
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $username = mysqli_real_escape_string($conn, $_POST['username']);
-    $password = mysqli_real_escape_string($conn, $_POST['password']);
-    $role = 'guru'; // Set role to 'guru'
+    $nama = $_POST['nama'];
+    $telepon = $_POST['telepon'];
+    $email = $_POST['email'];
+    $password = password_hash($_POST['password'], PASSWORD_DEFAULT); 
 
-    // Check if username already exists
-    $check_query = "SELECT * FROM users WHERE username='$username' LIMIT 1";
-    $check_result = mysqli_query($conn, $check_query);
-    
-    if (mysqli_num_rows($check_result) > 0) {
-        $error = "Username sudah terdaftar!";
+    $stmt = $pdo->prepare("INSERT INTO guru (nama, telepon, email, password) VALUES (?, ?, ?, ?)");
+    if ($stmt->execute([$nama, $telepon, $email, $password])) {
+        echo "Akun guru berhasil dibuat!";
     } else {
-        // Hash the password for secure storage
-        $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-        
-        // Insert the new user into the database
-        $query = "INSERT INTO users (username, password, role) VALUES ('$username', '$hashed_password', '$role')";
-        if (mysqli_query($conn, $query)) {
-            $_SESSION['user'] = $username;
-            $_SESSION['role'] = $role;
-            header('Location: ../guru/guru_dashboard.php'); // Redirect to guru dashboard after successful registration
-            exit();
-        } else {
-            $error = "Terjadi kesalahan saat mendaftar. Silakan coba lagi.";
-        }
+        echo "Terjadi kesalahan saat membuat akun: " . $stmt->errorInfo()[2];
     }
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register Guru</title>
-    <link rel="stylesheet" href="../assets/style.css"> <!-- Make sure this points to your CSS file -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-    <div class="container-1">    
-        <h1>Register Guru</h1>
-        <?php if (isset($error)) echo "<p style='color: red;'>$error</p>"; ?>
+    <div class="container">
+        <h2 class="mt-5">Register Guru</h2>
         <form method="POST">
-            <input type="text" name="username" placeholder="Username" required>
-            <input type="password" name="password" placeholder="Password" required>
-            <button type="submit">Register</button>
+            <div class="mb-3">
+                <label for="nama" class="form-label">Nama</label>
+                <input type="text" class="form-control" name="nama" required>
+            </div>
+            <div class="mb-3">
+                <label for="telepon" class="form-label">Telepon</label>
+                <input type="text" class="form-control" name="telepon">
+            </div>
+            <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" class="form-control" name="email" required>
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" class="form-control" name="password" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Register</button>
         </form>
-        <p>Sudah punya akun? <a href="login.php" class="text-success">Login disini</a></p>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.7/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
