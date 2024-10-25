@@ -1,10 +1,11 @@
 <?php include('header.php'); ?>
 
+
 <div class="d-flex flex-column min-vh-100">
 
     <!--Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #001f3f;"> 
-        <a class="navbar-brand" href="#"><b>School Management System</b></a>
+        <a class="navbar-brand" id="navbar-atas" href="#"><b>School Management System</b></a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent-333"
             aria-controls="navbarSupportedContent-333" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -28,7 +29,7 @@
                     </p>
                 </div>
 
-
+                <!-- Circular Buttons on the Right -->
                 <div class="col-lg-6 d-flex justify-content-end align-items-center">
                     <div class="text-center mx-3">
                         <!-- Admin Button -->
@@ -72,4 +73,5 @@
     .btn-circle i {
         font-size: 30px;
     }
+
 </style>
