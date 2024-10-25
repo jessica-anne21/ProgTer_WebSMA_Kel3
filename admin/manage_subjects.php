@@ -1,5 +1,5 @@
 <?php
-include '../includes/db.php';
+include '../includes/db.php'; 
 session_start();
 
 if (!isset($_SESSION['user'])) {
@@ -31,6 +31,18 @@ if (isset($_GET['delete'])) {
     $stmt->execute([$id]);
     header('Location: manage_subjects.php');
 }
+
+// Ambil data mata pelajaran untuk edit
+$subject = null;
+if (isset($_GET['edit'])) {
+    $id = $_GET['edit'];
+    $stmt = $pdo->prepare("SELECT * FROM mata_pelajaran WHERE id = ?");
+    $stmt->execute([$id]);
+    $subject = $stmt->fetch(PDO::FETCH_ASSOC);
+}
+
+// Ambil daftar guru untuk dropdown
+$teachers = $pdo->query("SELECT * FROM guru")->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
@@ -39,8 +51,16 @@ if (isset($_GET['delete'])) {
     <meta charset="UTF-8">
     <title>Manajemen Mata Pelajaran</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"> <!-- Font Awesome for icons -->
-    <link rel="stylesheet" href="admin_style.css"> <!-- Custom CSS for the page -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"> 
+    <link rel="stylesheet" href="admin_style.css">
+    <style>
+        #sidebarMenu {
+            position: sticky;
+            top: 0; 
+            height: 100vh; 
+            overflow-y: auto; 
+        }
+    </style>
 </head>
 <body>
     <!-- Navbar -->
@@ -53,7 +73,7 @@ if (isset($_GET['delete'])) {
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#">Home</a>
+                        <a class="nav-link" aria-current="page" href="#">Home</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="../index.php">Logout</a>
@@ -69,7 +89,7 @@ if (isset($_GET['delete'])) {
             <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-dark sidebar collapse">
                 <div class="position-sticky pt-3">
                     <ul class="nav flex-column">
-                        <li class="nav-item">
+                    <li class="nav-item">
                             <a class="nav-link" href="admin_dashboard.php">
                                 <i class="fas fa-home"></i> Dashboard
                             </a>
@@ -100,7 +120,7 @@ if (isset($_GET['delete'])) {
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="report_card">
+                            <a class="nav-link" href="report_card.php">
                                 <i class="fas fa-chart-bar"></i> Reports
                             </a>
                         </li>
@@ -114,10 +134,10 @@ if (isset($_GET['delete'])) {
                     <h1 class="h2">Manajemen Mata Pelajaran</h1>
                 </div>
 
-                <!-- Subjects Form Section -->
+                <!-- Form Mata Pelajaran -->
                 <div class="card mb-4">
                     <div class="card-header">
-                        <?= isset($_GET['edit']) ? 'Edit Mata Pelajaran' : 'Tambah Mata Pelajaran' ?>
+                        <?= isset($subject) ? 'Edit Mata Pelajaran' : 'Tambah Mata Pelajaran' ?>
                     </div>
                     <div class="card-body">
                         <form method="POST" class="row g-3">
@@ -128,16 +148,23 @@ if (isset($_GET['delete'])) {
                             </div>
                             <div class="col-md-6">
                                 <label for="guru_pengajar" class="form-label">Guru Pengajar</label>
-                                <input type="text" class="form-control" name="guru_pengajar" placeholder="Nama Guru Pengajar" value="<?= $subject['guru_pengajar'] ?? '' ?>" required>
+                                <select class="form-select" name="guru_pengajar" required>
+                                    <option value="" disabled <?= !isset($subject) ? 'selected' : '' ?>>Pilih Guru</option>
+                                    <?php foreach ($teachers as $teacher): ?>
+                                        <option value="<?= $teacher['id'] ?>" <?= (isset($subject) && $subject['guru_pengajar'] == $teacher['id']) ? 'selected' : '' ?>>
+                                            <?= $teacher['nama'] ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
                             </div>
                             <div class="col-12">
-                                <button type="submit" class="btn btn-primary"><?= isset($_GET['edit']) ? 'Update' : 'Tambah' ?> Mata Pelajaran</button>
+                                <button type="submit" class="btn btn-primary"><?= isset($subject) ? 'Update' : 'Tambah' ?> Mata Pelajaran</button>
                             </div>
                         </form>
                     </div>
                 </div>
 
-                <!-- Subjects Table Section -->
+                <!-- Tabel Mata Pelajaran -->
                 <div class="card">
                     <div class="card-header">
                         Daftar Mata Pelajaran
@@ -154,12 +181,12 @@ if (isset($_GET['delete'])) {
                             </thead>
                             <tbody>
                                 <?php
-                                $stmt = $pdo->query("SELECT * FROM mata_pelajaran");
+                                $stmt = $pdo->query("SELECT mp.*, g.nama AS nama_guru FROM mata_pelajaran mp LEFT JOIN guru g ON mp.guru_pengajar = g.id");
                                 while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                                     echo "<tr>
                                             <td>{$row['id']}</td>
                                             <td>{$row['nama']}</td>
-                                            <td>{$row['guru_pengajar']}</td>
+                                            <td>{$row['nama_guru']}</td>
                                             <td>
                                                 <a href='manage_subjects.php?edit={$row['id']}' class='btn btn-warning btn-sm'>Edit</a>
                                                 <a href='manage_subjects.php?delete={$row['id']}' class='btn btn-danger btn-sm'>Delete</a>
@@ -175,7 +202,6 @@ if (isset($_GET['delete'])) {
         </div>
     </div>
 
-    <!-- Bootstrap JS and Icons -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.7/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
