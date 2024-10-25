@@ -1,46 +1,67 @@
 <?php
+include '../includes/db.php';
 session_start();
-include('../includes/db.php'); // Make sure this points to the correct database connection file
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $username = mysqli_real_escape_string($conn, $_POST['username']);
-    $password = mysqli_real_escape_string($conn, $_POST['password']);
+    $email = $_POST['email'];
+    $password = $_POST['password'];
 
-    // Query to get the user with the role 'guru' and the entered username
-    $query = "SELECT * FROM users WHERE username='$username' AND role='guru' LIMIT 1";
-    $result = mysqli_query($conn, $query);
-    $user = mysqli_fetch_assoc($result);
+    // Check if the user exists
+    $stmt = $pdo->prepare("SELECT * FROM guru WHERE email = ?");
+    $stmt->execute([$email]);
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if ($user && password_verify($password, $user['password'])) {
-        // If the user is found and the password is correct
-        $_SESSION['user'] = $user['username'];
-        $_SESSION['role'] = $user['role']; // Set session role as 'guru'
-        header('Location: ../guru/guru_dashboard.php'); // Redirect to Guru's dashboard
+        // Start session and store user information
+        $_SESSION['user'] = $user;
+        header('Location: guru_dashboard.php'); // Redirect to teacher's dashboard
         exit();
     } else {
-        $error = "Username atau password salah!";
+        $error = "Email atau password salah!";
     }
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Guru</title>
-    <link rel="stylesheet" href="../assets/style.css"> 
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #002147; /* Navy background */
+            color: white;
+        }
+        .container {
+            max-width: 400px;
+            margin-top: 100px;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent background */
+            border-radius: 10px;
+        }
+    </style>
 </head>
 <body>
-    <div class="container-1">    
-        <h1>Login Guru</h1>
-        <?php if (isset($error)) echo "<p style='color: red;'>$error</p>"; ?>
+    <div class="container">
+        <h2 class="mt-5">Login Guru</h2>
+        <?php if (isset($error)): ?>
+            <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
+        <?php endif; ?>
         <form method="POST">
-            <input type="text" name="username" placeholder="Username" required>
-            <input type="password" name="password" placeholder="Password" required>
-            <button type="submit">Login</button>
+            <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" class="form-control" name="email" required>
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" class="form-control" name="password" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Login</button>
         </form>
-        <p>Belum punya akun? <a href="register_guru.php" class="text-success">Register Now</a></p>
-
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.7/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
