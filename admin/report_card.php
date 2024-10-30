@@ -1,26 +1,24 @@
 <?php
-include '../includes/db.php'; 
+include '../includes/db.php';
 session_start();
 
 if (!isset($_SESSION['user'])) {
     header('Location: ../login/login.php');
 }
 
-// Ambil data siswa untuk dropdown
 $siswa_stmt = $pdo->query("SELECT id, nama FROM siswa");
 $siswa_list = $siswa_stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Proses ketika form dikirim
 $selected_siswa = null;
 $siswa_nilai = [];
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['siswa_id'])) {
     $selected_siswa = $_POST['siswa_id'];
-    
-    // Ambil nilai untuk siswa yang dipilih
+
     $stmt = $pdo->prepare("
-        SELECT s.id AS siswa_id, s.nama AS siswa_nama, s.kelas, 
-               n.nilai, mp.id AS mata_pelajaran_id, mp.nama AS mata_pelajaran_nama
+        SELECT s.id AS siswa_id, s.nama AS siswa_nama, s.kelas,
+               mp.id AS mata_pelajaran_id, mp.nama AS mata_pelajaran_nama,
+               n.nilai_tugas, n.nilai_ujian
         FROM siswa s
         LEFT JOIN nilai n ON s.id = n.id_siswa
         LEFT JOIN mata_pelajaran mp ON n.id_mata_pelajaran = mp.id
@@ -37,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['siswa_id'])) {
     <meta charset="UTF-8">
     <title>Report Card</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"> 
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="admin_style.css">
 </head>
 <body>
@@ -67,7 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['siswa_id'])) {
             <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-dark sidebar collapse">
                 <div class="position-sticky pt-3">
                     <ul class="nav flex-column">
-                    <li class="nav-item">
+                        <li class="nav-item">
                             <a class="nav-link" href="admin_dashboard.php">
                                 <i class="fas fa-home"></i> Dashboard
                             </a>
@@ -106,13 +104,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['siswa_id'])) {
                 </div>
             </nav>
 
-            <!-- Main Content -->
             <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
                 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
                     <h1 class="h2">Report Card</h1>
                 </div>
 
-                <!-- Dropdown untuk memilih siswa -->
                 <form method="POST" class="mb-3">
                     <div class="mb-3">
                         <label for="siswa_id" class="form-label">Pilih Siswa:</label>
@@ -128,7 +124,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['siswa_id'])) {
                     <button type="submit" class="btn btn-primary">Tampilkan Nilai</button>
                 </form>
 
-                <!-- Tabel Siswa dan Nilai -->
                 <div class="card">
                     <div class="card-header">
                         Daftar Nilai Siswa
@@ -143,7 +138,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['siswa_id'])) {
                                         <th>Kelas</th>
                                         <th>ID Mata Pelajaran</th>
                                         <th>Nama Mata Pelajaran</th>
-                                        <th>Nilai</th>
+                                        <th>Nilai Tugas</th>
+                                        <th>Nilai Ujian</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -154,7 +150,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['siswa_id'])) {
                                             <td><?= htmlspecialchars($row['kelas']) ?></td>
                                             <td><?= htmlspecialchars($row['mata_pelajaran_id']) ?></td>
                                             <td><?= htmlspecialchars($row['mata_pelajaran_nama']) ?></td>
-                                            <td><?= htmlspecialchars($row['nilai']) ?></td>
+                                            <td><?= htmlspecialchars($row['nilai_tugas']) ?></td>
+                                            <td><?= htmlspecialchars($row['nilai_ujian']) ?></td>
                                         </tr>
                                     <?php endforeach; ?>
                                 </tbody>
