@@ -47,41 +47,6 @@ if (!isset($user['nama'])) {
         </div>
     </nav>
 
-    <div class="container-fluid">
-        <div class="row">
-            <!-- Sidebar -->
-            <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-dark sidebar collapse">
-                <div class="position-sticky pt-3">
-                    <ul class="nav flex-column">
-                        <li class="nav-item">
-                            <a class="nav-link active" href="#">
-                                <i class="fas fa-home"></i> Dashboard
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="view_schedule.php">
-                                <i class="fas fa-calendar"></i> View Schedule
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="view_grades.php">
-                                <i class="fas fa-chart-line"></i> View Grades
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="view_subjects.php">
-                                <i class="fas fa-book"></i> View Subjects
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="view_reportcard.php">
-                                <i class="fas fa-chart-bar"></i> View Report Card
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </nav>
-
             <!-- Main Content -->
             <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
                 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
