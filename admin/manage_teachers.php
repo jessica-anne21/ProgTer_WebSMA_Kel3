@@ -4,6 +4,7 @@ session_start();
 
 if (!isset($_SESSION['user'])) {
     header('Location: ../login/login.php');
+    exit();
 }
 
 // Proses penambahan atau pengeditan guru
@@ -11,17 +12,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $id = $_POST['id'] ?? null;
     $nama = $_POST['nama'];
     $telepon = $_POST['telepon'];
+    $email = $_POST['email'];
+    $jabatan = $_POST['jabatan'];
+    $alamat = $_POST['alamat'];
 
     if ($id) {
         // Update data guru
-        $stmt = $pdo->prepare("UPDATE guru SET nama = ?, telepon = ? WHERE id = ?");
-        $stmt->execute([$nama, $telepon, $id]);
+        $stmt = $pdo->prepare("UPDATE guru SET nama = ?, telepon = ?, email = ?, jabatan = ?, alamat = ? WHERE id = ?");
+        $stmt->execute([$nama, $telepon, $email, $jabatan, $alamat, $id]);
     } else {
         // Tambah data guru
-        $stmt = $pdo->prepare("INSERT INTO guru (nama, telepon) VALUES (?, ?)");
-        $stmt->execute([$nama, $telepon]);
+        $stmt = $pdo->prepare("INSERT INTO guru (nama, telepon, email, jabatan, alamat) VALUES (?, ?, ?, ?, ?)");
+        $stmt->execute([$nama, $telepon, $email, $jabatan, $alamat]);
     }
     header('Location: manage_teachers.php');
+    exit();
 }
 
 // Proses penghapusan guru
@@ -30,6 +35,7 @@ if (isset($_GET['delete'])) {
     $stmt = $pdo->prepare("DELETE FROM guru WHERE id = ?");
     $stmt->execute([$id]);
     header('Location: manage_teachers.php');
+    exit();
 }
 
 // Ambil data guru untuk edit
@@ -113,7 +119,7 @@ if (isset($_GET['edit'])) {
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="manage_schedule.php">
-                                <i class="fas fa-calendar"></i> Schedule
+                                <i class="fas fa-calendar"></i> Manage Schedule
                             </a>
                         </li>
                         <li class="nav-item">
@@ -147,6 +153,18 @@ if (isset($_GET['edit'])) {
                                 <label for="telepon" class="form-label">Telepon</label>
                                 <input type="text" class="form-control" name="telepon" placeholder="Nomor Telepon" value="<?= $teacher['telepon'] ?? '' ?>">
                             </div>
+                            <div class="col-md-6">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" class="form-control" name="email" placeholder="Email" value="<?= $teacher['email'] ?? '' ?>" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="jabatan" class="form-label">Jabatan</label>
+                                <input type="text" class="form-control" name="jabatan" placeholder="Jabatan" value="<?= $teacher['jabatan'] ?? '' ?>">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="alamat" class="form-label">Alamat</label>
+                                <textarea class="form-control" name="alamat" placeholder="Alamat"><?= $teacher['alamat'] ?? '' ?></textarea>
+                            </div>
                             <div class="col-12">
                                 <button type="submit" class="btn btn-primary"><?= isset($teacher) ? 'Update' : 'Tambah' ?> Guru</button>
                             </div>
@@ -165,7 +183,10 @@ if (isset($_GET['edit'])) {
                                 <tr>
                                     <th>ID</th>
                                     <th>Nama</th>
+                                    <th>Email</th>
+                                    <th>Jabatan</th>
                                     <th>Telepon</th>
+                                    <th>Alamat</th>
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
@@ -176,7 +197,10 @@ if (isset($_GET['edit'])) {
                                     echo "<tr>
                                             <td>{$row['id']}</td>
                                             <td>{$row['nama']}</td>
+                                            <td>{$row['email']}</td>
+                                            <td>{$row['jabatan']}</td>
                                             <td>{$row['telepon']}</td>
+                                            <td>{$row['alamat']}</td>
                                             <td>
                                                 <a href='manage_teachers.php?edit={$row['id']}' class='btn btn-warning btn-sm'>Edit</a>
                                                 <a href='manage_teachers.php?delete={$row['id']}' class='btn btn-danger btn-sm'>Delete</a>
