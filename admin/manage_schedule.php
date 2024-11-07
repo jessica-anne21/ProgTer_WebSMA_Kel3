@@ -6,7 +6,6 @@ if (!isset($_SESSION['user'])) {
     header('Location: ../login/login.php');
 }
 
-// Proses penambahan atau pengeditan jadwal
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $id = $_POST['id'] ?? null;
     $id_guru = $_POST['guru_id'];
@@ -15,20 +14,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $hari = $_POST['hari'];
     $jam_mulai = $_POST['jam_mulai'];
     $jam_selesai = $_POST['jam_selesai'];
+    $ruangan = $_POST['ruangan'];  
 
     if ($id) {
-        // Update data jadwal
-        $stmt = $pdo->prepare("UPDATE jadwal SET id_guru = ?, id_mata_pelajaran = ?, kelas = ?, hari = ?, jam_mulai = ?, jam_selesai = ? WHERE id = ?");
-        $stmt->execute([$id_guru, $id_mata_pelajaran, $kelas, $hari, $jam_mulai, $jam_selesai, $id]);
+        $stmt = $pdo->prepare("UPDATE jadwal SET id_guru = ?, id_mata_pelajaran = ?, kelas = ?, hari = ?, jam_mulai = ?, jam_selesai = ?, ruangan = ? WHERE id = ?");
+        $stmt->execute([$id_guru, $id_mata_pelajaran, $kelas, $hari, $jam_mulai, $jam_selesai, $ruangan, $id]);
     } else {
-        // Tambah data jadwal
-        $stmt = $pdo->prepare("INSERT INTO jadwal (id_guru, id_mata_pelajaran, kelas, hari, jam_mulai, jam_selesai) VALUES (?, ?, ?, ?, ?, ?)");
-        $stmt->execute([$id_guru, $id_mata_pelajaran, $kelas, $hari, $jam_mulai, $jam_selesai]);
+        $stmt = $pdo->prepare("INSERT INTO jadwal (id_guru, id_mata_pelajaran, kelas, hari, jam_mulai, jam_selesai, ruangan) VALUES (?, ?, ?, ?, ?, ?, ?)");
+        $stmt->execute([$id_guru, $id_mata_pelajaran, $kelas, $hari, $jam_mulai, $jam_selesai, $ruangan]);
     }
     header('Location: manage_schedule.php');
 }
 
-// Proses penghapusan jadwal
 if (isset($_GET['delete'])) {
     $id = $_GET['delete'];
     $stmt = $pdo->prepare("DELETE FROM jadwal WHERE id = ?");
@@ -36,7 +33,6 @@ if (isset($_GET['delete'])) {
     header('Location: manage_schedule.php');
 }
 
-// Ambil data jadwal untuk edit
 $schedule = null;
 if (isset($_GET['edit'])) {
     $id = $_GET['edit'];
@@ -45,11 +41,9 @@ if (isset($_GET['edit'])) {
     $schedule = $stmt->fetch(PDO::FETCH_ASSOC);
 }
 
-// Ambil data guru untuk dropdown
 $stmt = $pdo->query("SELECT * FROM guru");
 $gurus = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Ambil data mata pelajaran untuk dropdown
 $stmt = $pdo->query("SELECT * FROM mata_pelajaran");
 $mataPelajaran = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
@@ -98,7 +92,7 @@ $mataPelajaran = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-dark sidebar collapse">
                 <div class="position-sticky pt-3">
                     <ul class="nav flex-column">
-                    <li class="nav-item">
+                        <li class="nav-item">
                             <a class="nav-link" href="admin_dashboard.php">
                                 <i class="fas fa-home"></i> Dashboard
                             </a>
@@ -125,7 +119,7 @@ $mataPelajaran = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         </li>
                         <li class="nav-item">
                             <a class="nav-link active" href="manage_schedule.php">
-                                <i class="fas fa-calendar"></i> Schedule
+                                <i class="fas fa-calendar"></i> Manage Schedule
                             </a>
                         </li>
                         <li class="nav-item">
@@ -185,60 +179,58 @@ $mataPelajaran = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <label for="jam_selesai" class="form-label">Jam Selesai</label>
                                 <input type="time" class="form-control" name="jam_selesai" value="<?= $schedule['jam_selesai'] ?? '' ?>" required>
                             </div>
+                            <div class="col-md-6">
+                                <label for="ruangan" class="form-label">Ruangan</label>
+                                <input type="text" class="form-control" name="ruangan" value="<?= $schedule['ruangan'] ?? '' ?>" required>
+                            </div>
                             <div class="col-12">
-                                <button type="submit" class="btn btn-primary"><?= isset($schedule) ? 'Update' : 'Tambah' ?> Jadwal</button>
+                                <button type="submit" class="btn btn-primary">Simpan Jadwal</button>
                             </div>
                         </form>
                     </div>
                 </div>
 
                 <!-- Tabel Jadwal -->
-                <div class="card">
-                    <div class="card-header">
-                        Daftar Jadwal
-                    </div>
-                    <div class="card-body">
-                        <table class="table table-striped table-hover">
-                            <thead>
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Guru</th>
+                                <th>Mata Pelajaran</th>
+                                <th>Kelas</th>
+                                <th>Hari</th>
+                                <th>Jam Mulai</th>
+                                <th>Jam Selesai</th>
+                                <th>Ruangan</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            $stmt = $pdo->query("SELECT jadwal.*, guru.nama AS guru_nama, mata_pelajaran.nama AS mata_pelajaran_nama FROM jadwal JOIN guru ON jadwal.id_guru = guru.id JOIN mata_pelajaran ON jadwal.id_mata_pelajaran = mata_pelajaran.id");
+                            $no = 1;
+                            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)): ?>
                                 <tr>
-                                    <th>ID</th>
-                                    <th>Guru</th>
-                                    <th>Mata Pelajaran</th>
-                                    <th>Kelas</th>
-                                    <th>Hari</th>
-                                    <th>Jam Mulai</th>
-                                    <th>Jam Selesai</th>
-                                    <th>Aksi</th>
+                                    <td><?= $no++ ?></td>
+                                    <td><?= $row['guru_nama'] ?></td>
+                                    <td><?= $row['mata_pelajaran_nama'] ?></td>
+                                    <td><?= $row['kelas'] ?></td>
+                                    <td><?= $row['hari'] ?></td>
+                                    <td><?= $row['jam_mulai'] ?></td>
+                                    <td><?= $row['jam_selesai'] ?></td>
+                                    <td><?= $row['ruangan'] ?></td>
+                                    <td>
+                                        <a href="manage_schedule.php?edit=<?= $row['id'] ?>" class="btn btn-warning btn-sm">Edit</a>
+                                        <a href="manage_schedule.php?delete=<?= $row['id'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?')">Delete</a>
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                <?php
-                                $stmt = $pdo->query("SELECT j.*, g.nama AS guru, mp.nama AS mata_pelajaran FROM jadwal j JOIN guru g ON j.id_guru = g.id JOIN mata_pelajaran mp ON j.id_mata_pelajaran = mp.id");
-                                while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                                    echo "<tr>
-                                            <td>{$row['id']}</td>
-                                            <td>{$row['guru']}</td>
-                                            <td>{$row['mata_pelajaran']}</td>
-                                            <td>{$row['kelas']}</td>
-                                            <td>{$row['hari']}</td>
-                                            <td>{$row['jam_mulai']}</td>
-                                            <td>{$row['jam_selesai']}</td>
-                                            <td>
-                                                <a href='manage_schedule.php?edit={$row['id']}' class='btn btn-warning btn-sm'>Edit</a>
-                                                <a href='manage_schedule.php?delete={$row['id']}' class='btn btn-danger btn-sm' onclick='return confirm(\"Are you sure?\")'>Delete</a>
-                                            </td>
-                                        </tr>";
-                                }
-                                ?>
-                            </tbody>
-                        </table>
-                    </div>
+                            <?php endwhile; ?>
+                        </tbody>
+                    </table>
                 </div>
             </main>
         </div>
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
 </body>
 </html>
