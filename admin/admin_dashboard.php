@@ -6,15 +6,12 @@ if (!isset($_SESSION['user'])) {
     header('Location: ../login/login.php');
 }
 
-// Query to count the total number of teachers
 $stmt_teachers = $pdo->query("SELECT COUNT(*) AS total_teachers FROM guru");
 $total_teachers = $stmt_teachers->fetch(PDO::FETCH_ASSOC)['total_teachers'];
 
-// Query to count the total number of students
 $stmt_students = $pdo->query("SELECT COUNT(*) AS total_students FROM siswa");
 $total_students = $stmt_students->fetch(PDO::FETCH_ASSOC)['total_students'];
 
-// Query to count the total number of subjects
 $stmt_subjects = $pdo->query("SELECT COUNT(*) AS total_subjects FROM mata_pelajaran");
 $total_subjects = $stmt_subjects->fetch(PDO::FETCH_ASSOC)['total_subjects'];
 ?>
@@ -82,7 +79,7 @@ $total_subjects = $stmt_subjects->fetch(PDO::FETCH_ASSOC)['total_subjects'];
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="manage_schedule.php">
-                                <i class="fas fa-calendar"></i> Schedule
+                                <i class="fas fa-calendar"></i> Manage Schedule
                             </a>
                         </li>
                         <li class="nav-item">
@@ -106,11 +103,11 @@ $total_subjects = $stmt_subjects->fetch(PDO::FETCH_ASSOC)['total_subjects'];
                     <div class="col-md-4">
                         <div class="card text-white bg-primary mb-3">
                             <div class="card-header">
-                                <i class="fas fa-chalkboard-teacher"></i> Total Teachers
+                                <i class="fas fa-chalkboard-teacher"></i> Total Guru
                             </div>
                             <div class="card-body">
                                 <h5 class="card-title"><?= $total_teachers ?></h5>
-                                <p class="card-text">Total number of teachers in the system.</p>
+                                <p class="card-text">Jumlah total guru yang terdapat dalam sistem.</p>
                             </div>
                         </div>
                     </div>
@@ -119,11 +116,11 @@ $total_subjects = $stmt_subjects->fetch(PDO::FETCH_ASSOC)['total_subjects'];
                     <div class="col-md-4">
                         <div class="card text-white bg-success mb-3">
                             <div class="card-header">
-                                <i class="fas fa-user-graduate"></i> Total Students
+                                <i class="fas fa-user-graduate"></i> Total Siswa
                             </div>
                             <div class="card-body">
                                 <h5 class="card-title"><?= $total_students ?></h5>
-                                <p class="card-text">Total number of students in the system.</p>
+                                <p class="card-text">Jumlah total siswa yang terdapat dalam sistem.</p>
                             </div>
                         </div>
                     </div>
@@ -132,11 +129,11 @@ $total_subjects = $stmt_subjects->fetch(PDO::FETCH_ASSOC)['total_subjects'];
                     <div class="col-md-4">
                         <div class="card text-white bg-warning mb-3">
                             <div class="card-header">
-                                <i class="fas fa-book"></i> Total Subjects
+                                <i class="fas fa-book"></i> Total Mata Pelajaran
                             </div>
                             <div class="card-body">
                                 <h5 class="card-title"><?= $total_subjects ?></h5>
-                                <p class="card-text">Total number of subjects available.</p>
+                                <p class="card-text">Jumlah total mata pelajaran yang tersedia di dalam sistem.</p>
                             </div>
                         </div>
                     </div>
@@ -145,7 +142,6 @@ $total_subjects = $stmt_subjects->fetch(PDO::FETCH_ASSOC)['total_subjects'];
         </div>
     </div>
 
-    <!-- Bootstrap JS and Icons -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.7/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
