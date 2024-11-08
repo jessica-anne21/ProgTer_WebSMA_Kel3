@@ -69,11 +69,6 @@ if (!isset($user['nama'])) {
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="view_subjects.php">
-                                <i class="fas fa-book"></i> View Subjects
-                            </a>
-                        </li>
-                        <li class="nav-item">
                             <a class="nav-link" href="view_reportcard.php">
                                 <i class="fas fa-chart-bar"></i> View Report Card
                             </a>
@@ -105,3 +100,4 @@ if (!isset($user['nama'])) {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+
