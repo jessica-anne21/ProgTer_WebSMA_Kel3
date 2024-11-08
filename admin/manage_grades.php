@@ -6,26 +6,25 @@ if (!isset($_SESSION['user'])) {
     header('Location: ../login/login.php');
 }
 
-// Proses penambahan atau pengeditan nilai
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $id = $_POST['id'] ?? null;
     $id_siswa = $_POST['id_siswa'];
     $id_mata_pelajaran = $_POST['id_mata_pelajaran'];
     $tahun_ajaran = $_POST['tahun_ajaran'];
     $kelas = $_POST['kelas'];
-    $nilai = $_POST['nilai'];
+    $nilai_tugas = $_POST['nilai_tugas'];
+    $nilai_ujian = $_POST['nilai_ujian'];
 
     if ($id) {
-        $stmt = $pdo->prepare("UPDATE nilai SET id_siswa = ?, id_mata_pelajaran = ?, tahun_ajaran = ?, kelas = ?, nilai = ? WHERE id = ?");
-        $stmt->execute([$id_siswa, $id_mata_pelajaran, $tahun_ajaran, $kelas, $nilai, $id]);
+        $stmt = $pdo->prepare("UPDATE nilai SET id_siswa = ?, id_mata_pelajaran = ?, tahun_ajaran = ?, kelas = ?, nilai_tugas = ?, nilai_ujian = ? WHERE id = ?");
+        $stmt->execute([$id_siswa, $id_mata_pelajaran, $tahun_ajaran, $kelas, $nilai_tugas, $nilai_ujian, $id]);
     } else {
-        $stmt = $pdo->prepare("INSERT INTO nilai (id_siswa, id_mata_pelajaran, tahun_ajaran, kelas, nilai) VALUES (?, ?, ?, ?, ?)");
-        $stmt->execute([$id_siswa, $id_mata_pelajaran, $tahun_ajaran, $kelas, $nilai]);
+        $stmt = $pdo->prepare("INSERT INTO nilai (id_siswa, id_mata_pelajaran, tahun_ajaran, kelas, nilai_tugas, nilai_ujian) VALUES (?, ?, ?, ?, ?, ?)");
+        $stmt->execute([$id_siswa, $id_mata_pelajaran, $tahun_ajaran, $kelas, $nilai_tugas, $nilai_ujian]);
     }
     header('Location: manage_grades.php');
 }
 
-// Proses penghapusan nilai
 if (isset($_GET['delete'])) {
     $id = $_GET['delete'];
     $stmt = $pdo->prepare("DELETE FROM nilai WHERE id = ?");
@@ -62,9 +61,6 @@ if (isset($_GET['delete'])) {
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#">Home</a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link" href="../index.php">Logout</a>
                     </li>
                 </ul>
@@ -78,7 +74,7 @@ if (isset($_GET['delete'])) {
             <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-dark sidebar collapse">
                 <div class="position-sticky pt-3">
                     <ul class="nav flex-column">
-                    <li class="nav-item">
+                        <li class="nav-item">
                             <a class="nav-link" href="admin_dashboard.php">
                                 <i class="fas fa-home"></i> Dashboard
                             </a>
@@ -105,7 +101,7 @@ if (isset($_GET['delete'])) {
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="manage_schedule.php">
-                                <i class="fas fa-calendar"></i> Schedule
+                                <i class="fas fa-calendar"></i> Manage Schedule
                             </a>
                         </li>
                         <li class="nav-item">
@@ -148,8 +144,12 @@ if (isset($_GET['delete'])) {
                                 <input type="text" class="form-control" name="kelas" placeholder="Kelas" value="<?= $nilai['kelas'] ?? '' ?>" required>
                             </div>
                             <div class="col-md-4">
-                                <label for="nilai" class="form-label">Nilai</label>
-                                <input type="text" class="form-control" name="nilai" placeholder="Nilai" value="<?= $nilai['nilai'] ?? '' ?>" required>
+                                <label for="nilai_tugas" class="form-label">Nilai Tugas</label>
+                                <input type="number" class="form-control" name="nilai_tugas" placeholder="Nilai Tugas" value="<?= $nilai['nilai_tugas'] ?? '' ?>" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="nilai_ujian" class="form-label">Nilai Ujian</label>
+                                <input type="number" class="form-control" name="nilai_ujian" placeholder="Nilai Ujian" value="<?= $nilai['nilai_ujian'] ?? '' ?>" required>
                             </div>
                             <div class="col-12">
                                 <button type="submit" class="btn btn-primary"><?= isset($_GET['edit']) ? 'Update' : 'Tambah' ?> Nilai</button>
@@ -169,24 +169,35 @@ if (isset($_GET['delete'])) {
                                 <tr>
                                     <th>ID</th>
                                     <th>ID Siswa</th>
+                                    <th>Nama Siswa</th>
                                     <th>ID Mata Pelajaran</th>
+                                    <th>Nama Mata Pelajaran</th>
                                     <th>Tahun Ajaran</th>
                                     <th>Kelas</th>
-                                    <th>Nilai</th>
+                                    <th>Nilai Tugas</th>
+                                    <th>Nilai Ujian</th>
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php
-                                $stmt = $pdo->query("SELECT * FROM nilai");
+                                $stmt = $pdo->query("
+                                    SELECT n.*, s.nama AS nama_siswa, mp.nama AS nama_mata_pelajaran 
+                                    FROM nilai n 
+                                    LEFT JOIN siswa s ON n.id_siswa = s.id 
+                                    LEFT JOIN mata_pelajaran mp ON n.id_mata_pelajaran = mp.id
+                                ");
                                 while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                                     echo "<tr>
                                             <td>{$row['id']}</td>
                                             <td>{$row['id_siswa']}</td>
+                                            <td>{$row['nama_siswa']}</td>
                                             <td>{$row['id_mata_pelajaran']}</td>
+                                            <td>{$row['nama_mata_pelajaran']}</td>
                                             <td>{$row['tahun_ajaran']}</td>
                                             <td>{$row['kelas']}</td>
-                                            <td>{$row['nilai']}</td>
+                                            <td>{$row['nilai_tugas']}</td>
+                                            <td>{$row['nilai_ujian']}</td>
                                             <td>
                                                 <a href='manage_grades.php?edit={$row['id']}' class='btn btn-warning btn-sm'>Edit</a>
                                                 <a href='manage_grades.php?delete={$row['id']}' class='btn btn-danger btn-sm'>Hapus</a>
