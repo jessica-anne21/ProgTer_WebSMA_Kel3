@@ -6,25 +6,21 @@ if (!isset($_SESSION['user'])) {
     header('Location: ../login/login.php');
 }
 
-// Proses penambahan atau pengeditan mata pelajaran
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $id = $_POST['id'] ?? null;
     $nama = $_POST['nama'];
     $guru_pengajar = $_POST['guru_pengajar'];
 
     if ($id) {
-        // Update data mata pelajaran
         $stmt = $pdo->prepare("UPDATE mata_pelajaran SET nama = ?, guru_pengajar = ? WHERE id = ?");
         $stmt->execute([$nama, $guru_pengajar, $id]);
     } else {
-        // Tambah data mata pelajaran
         $stmt = $pdo->prepare("INSERT INTO mata_pelajaran (nama, guru_pengajar) VALUES (?, ?)");
         $stmt->execute([$nama, $guru_pengajar]);
     }
     header('Location: manage_subjects.php');
 }
 
-// Proses penghapusan mata pelajaran
 if (isset($_GET['delete'])) {
     $id = $_GET['delete'];
     $stmt = $pdo->prepare("DELETE FROM mata_pelajaran WHERE id = ?");
@@ -32,7 +28,6 @@ if (isset($_GET['delete'])) {
     header('Location: manage_subjects.php');
 }
 
-// Ambil data mata pelajaran untuk edit
 $subject = null;
 if (isset($_GET['edit'])) {
     $id = $_GET['edit'];
@@ -41,8 +36,16 @@ if (isset($_GET['edit'])) {
     $subject = $stmt->fetch(PDO::FETCH_ASSOC);
 }
 
-// Ambil daftar guru untuk dropdown
 $teachers = $pdo->query("SELECT * FROM guru")->fetchAll(PDO::FETCH_ASSOC);
+
+$search_query = $_GET['search'] ?? '';
+$query = "SELECT mp.*, g.nama AS nama_guru 
+          FROM mata_pelajaran mp 
+          LEFT JOIN guru g ON mp.guru_pengajar = g.id 
+          WHERE mp.nama LIKE :search_query";
+$stmt = $pdo->prepare($query);
+$stmt->execute(['search_query' => "%$search_query%"]);
+$subjects = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
@@ -53,17 +56,8 @@ $teachers = $pdo->query("SELECT * FROM guru")->fetchAll(PDO::FETCH_ASSOC);
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"> 
     <link rel="stylesheet" href="admin_style.css">
-    <style>
-        #sidebarMenu {
-            position: sticky;
-            top: 0; 
-            height: 100vh; 
-            overflow-y: auto; 
-        }
-    </style>
 </head>
 <body>
-    <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-navy">
         <div class="container-fluid">
             <a class="navbar-brand" href="#"><b>Admin Dashboard</b></a>
@@ -72,9 +66,6 @@ $teachers = $pdo->query("SELECT * FROM guru")->fetchAll(PDO::FETCH_ASSOC);
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" aria-current="page" href="#">Home</a>
-                    </li>
                     <li class="nav-item">
                         <a class="nav-link" href="../index.php">Logout</a>
                     </li>
@@ -89,7 +80,7 @@ $teachers = $pdo->query("SELECT * FROM guru")->fetchAll(PDO::FETCH_ASSOC);
             <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-dark sidebar collapse">
                 <div class="position-sticky pt-3">
                     <ul class="nav flex-column">
-                    <li class="nav-item">
+                        <li class="nav-item">
                             <a class="nav-link" href="admin_dashboard.php">
                                 <i class="fas fa-home"></i> Dashboard
                             </a>
@@ -116,7 +107,7 @@ $teachers = $pdo->query("SELECT * FROM guru")->fetchAll(PDO::FETCH_ASSOC);
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="manage_schedule.php">
-                                <i class="fas fa-calendar"></i> Schedule
+                                <i class="fas fa-calendar"></i> Manage Schedule
                             </a>
                         </li>
                         <li class="nav-item">
@@ -164,12 +155,18 @@ $teachers = $pdo->query("SELECT * FROM guru")->fetchAll(PDO::FETCH_ASSOC);
                     </div>
                 </div>
 
-                <!-- Tabel Mata Pelajaran -->
                 <div class="card">
                     <div class="card-header">
                         Daftar Mata Pelajaran
                     </div>
                     <div class="card-body">
+                        <form method="GET" class="mb-3">
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="search" placeholder="Cari nama mata pelajaran" value="<?= htmlspecialchars($search_query) ?>">
+                                <button type="submit" class="btn btn-primary">Cari</button>
+                            </div>
+                        </form>
+
                         <table class="table table-striped table-hover">
                             <thead>
                                 <tr>
@@ -180,20 +177,17 @@ $teachers = $pdo->query("SELECT * FROM guru")->fetchAll(PDO::FETCH_ASSOC);
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php
-                                $stmt = $pdo->query("SELECT mp.*, g.nama AS nama_guru FROM mata_pelajaran mp LEFT JOIN guru g ON mp.guru_pengajar = g.id");
-                                while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                                    echo "<tr>
-                                            <td>{$row['id']}</td>
-                                            <td>{$row['nama']}</td>
-                                            <td>{$row['nama_guru']}</td>
-                                            <td>
-                                                <a href='manage_subjects.php?edit={$row['id']}' class='btn btn-warning btn-sm'>Edit</a>
-                                                <a href='manage_subjects.php?delete={$row['id']}' class='btn btn-danger btn-sm'>Delete</a>
-                                            </td>
-                                        </tr>";
-                                }
-                                ?>
+                                <?php foreach ($subjects as $row): ?>
+                                    <tr>
+                                        <td><?= htmlspecialchars($row['id']) ?></td>
+                                        <td><?= htmlspecialchars($row['nama']) ?></td>
+                                        <td><?= htmlspecialchars($row['nama_guru']) ?></td>
+                                        <td>
+                                            <a href="manage_subjects.php?edit=<?= $row['id'] ?>" class="btn btn-warning btn-sm">Edit</a>
+                                            <a href="manage_subjects.php?delete=<?= $row['id'] ?>" class="btn btn-danger btn-sm">Delete</a>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
                             </tbody>
                         </table>
                     </div>
