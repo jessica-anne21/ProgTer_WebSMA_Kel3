@@ -6,6 +6,7 @@ if (!isset($_SESSION['user'])) {
     header('Location: ../login/login.php');
 }
 
+// Handle form submission for adding or updating grades
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $id = $_POST['id'] ?? null;
     $id_siswa = $_POST['id_siswa'];
@@ -13,24 +14,40 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $tahun_ajaran = $_POST['tahun_ajaran'];
     $kelas = $_POST['kelas'];
     $nilai_tugas = $_POST['nilai_tugas'];
-    $nilai_ujian = $_POST['nilai_ujian'];
+    $nilai_uts = $_POST['nilai_uts'];
+    $nilai_uas = $_POST['nilai_uas'];
 
     if ($id) {
-        $stmt = $pdo->prepare("UPDATE nilai SET id_siswa = ?, id_mata_pelajaran = ?, tahun_ajaran = ?, kelas = ?, nilai_tugas = ?, nilai_ujian = ? WHERE id = ?");
-        $stmt->execute([$id_siswa, $id_mata_pelajaran, $tahun_ajaran, $kelas, $nilai_tugas, $nilai_ujian, $id]);
+        $stmt = $pdo->prepare("UPDATE nilai SET id_siswa = ?, id_mata_pelajaran = ?, tahun_ajaran = ?, kelas = ?, nilai_tugas = ?, nilai_uts = ?, nilai_uas = ? WHERE id = ?");
+        $stmt->execute([$id_siswa, $id_mata_pelajaran, $tahun_ajaran, $kelas, $nilai_tugas, $nilai_uts, $nilai_uas, $id]);
     } else {
-        $stmt = $pdo->prepare("INSERT INTO nilai (id_siswa, id_mata_pelajaran, tahun_ajaran, kelas, nilai_tugas, nilai_ujian) VALUES (?, ?, ?, ?, ?, ?)");
-        $stmt->execute([$id_siswa, $id_mata_pelajaran, $tahun_ajaran, $kelas, $nilai_tugas, $nilai_ujian]);
+        $stmt = $pdo->prepare("INSERT INTO nilai (id_siswa, id_mata_pelajaran, tahun_ajaran, kelas, nilai_tugas, nilai_uts, nilai_uas) VALUES (?, ?, ?, ?, ?, ?, ?)");
+        $stmt->execute([$id_siswa, $id_mata_pelajaran, $tahun_ajaran, $kelas, $nilai_tugas, $nilai_uts, $nilai_uas]);
     }
     header('Location: manage_grades.php');
 }
 
+// Handle deletion
 if (isset($_GET['delete'])) {
     $id = $_GET['delete'];
     $stmt = $pdo->prepare("DELETE FROM nilai WHERE id = ?");
     $stmt->execute([$id]);
     header('Location: manage_grades.php');
 }
+
+// Fetch subjects
+$subjects = $pdo->query("SELECT id, nama FROM mata_pelajaran")->fetchAll(PDO::FETCH_ASSOC);
+
+// Fetch all grades without filtering by class
+$query = "
+    SELECT n.*, s.nama AS nama_siswa, mp.nama AS nama_mata_pelajaran 
+    FROM nilai n 
+    LEFT JOIN siswa s ON n.id_siswa = s.id 
+    LEFT JOIN mata_pelajaran mp ON n.id_mata_pelajaran = mp.id
+";
+$stmt = $pdo->prepare($query);
+$stmt->execute();
+$grades = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
@@ -39,14 +56,14 @@ if (isset($_GET['delete'])) {
     <meta charset="UTF-8">
     <title>Manajemen Nilai</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"> 
-    <link rel="stylesheet" href="admin_style.css"> 
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="admin_style.css">
     <style>
         #sidebarMenu {
             position: sticky;
-            top: 0; 
-            height: 100vh; 
-            overflow-y: auto; 
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
         }
     </style>
 </head>
@@ -132,8 +149,15 @@ if (isset($_GET['delete'])) {
                                 <input type="text" class="form-control" name="id_siswa" placeholder="ID Siswa" value="<?= $nilai['id_siswa'] ?? '' ?>" required>
                             </div>
                             <div class="col-md-4">
-                                <label for="id_mata_pelajaran" class="form-label">ID Mata Pelajaran</label>
-                                <input type="text" class="form-control" name="id_mata_pelajaran" placeholder="ID Mata Pelajaran" value="<?= $nilai['id_mata_pelajaran'] ?? '' ?>" required>
+                                <label for="id_mata_pelajaran" class="form-label">Nama Mata Pelajaran</label>
+                                <select class="form-control" name="id_mata_pelajaran" required>
+                                    <option value="">Pilih Mata Pelajaran</option>
+                                    <?php foreach ($subjects as $subject): ?>
+                                        <option value="<?= $subject['id'] ?>" <?= isset($nilai['id_mata_pelajaran']) && $nilai['id_mata_pelajaran'] == $subject['id'] ? 'selected' : '' ?>>
+                                            <?= $subject['nama'] ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
                             </div>
                             <div class="col-md-4">
                                 <label for="tahun_ajaran" class="form-label">Tahun Ajaran</label>
@@ -148,71 +172,62 @@ if (isset($_GET['delete'])) {
                                 <input type="number" class="form-control" name="nilai_tugas" placeholder="Nilai Tugas" value="<?= $nilai['nilai_tugas'] ?? '' ?>" required>
                             </div>
                             <div class="col-md-4">
-                                <label for="nilai_ujian" class="form-label">Nilai Ujian</label>
-                                <input type="number" class="form-control" name="nilai_ujian" placeholder="Nilai Ujian" value="<?= $nilai['nilai_ujian'] ?? '' ?>" required>
+                                <label for="nilai_uts" class="form-label">Nilai UTS</label>
+                                <input type="number" class="form-control" name="nilai_uts" placeholder="Nilai UTS" value="<?= $nilai['nilai_uts'] ?? '' ?>" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="nilai_uas" class="form-label">Nilai UAS</label>
+                                <input type="number" class="form-control" name="nilai_uas" placeholder="Nilai UAS" value="<?= $nilai['nilai_uas'] ?? '' ?>" required>
                             </div>
                             <div class="col-12">
-                                <button type="submit" class="btn btn-primary"><?= isset($_GET['edit']) ? 'Update' : 'Tambah' ?> Nilai</button>
+                                <button type="submit" class="btn btn-primary">
+                                    <?= isset($_GET['edit']) ? 'Update Nilai' : 'Tambah Nilai' ?>
+                                </button>
                             </div>
                         </form>
                     </div>
                 </div>
 
                 <!-- Grades Table Section -->
-                <div class="card">
-                    <div class="card-header">
-                        Daftar Nilai
-                    </div>
-                    <div class="card-body">
-                        <table class="table table-striped table-hover">
-                            <thead>
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered">
+                        <thead>
+                            <tr>
+                                <th>ID Siswa</th>
+                                <th>Nama Siswa</th>
+                                <th>Mata Pelajaran</th>
+                                <th>Tahun Ajaran</th>
+                                <th>Kelas</th>
+                                <th>Nilai Tugas</th>
+                                <th>Nilai UTS</th>
+                                <th>Nilai UAS</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($grades as $grade): ?>
                                 <tr>
-                                    <th>ID</th>
-                                    <th>ID Siswa</th>
-                                    <th>Nama Siswa</th>
-                                    <th>ID Mata Pelajaran</th>
-                                    <th>Nama Mata Pelajaran</th>
-                                    <th>Tahun Ajaran</th>
-                                    <th>Kelas</th>
-                                    <th>Nilai Tugas</th>
-                                    <th>Nilai Ujian</th>
-                                    <th>Aksi</th>
+                                    <td><?= $grade['id_siswa'] ?></td>
+                                    <td><?= $grade['nama_siswa'] ?></td>
+                                    <td><?= $grade['nama_mata_pelajaran'] ?></td>
+                                    <td><?= $grade['tahun_ajaran'] ?></td>
+                                    <td><?= $grade['kelas'] ?></td>
+                                    <td><?= $grade['nilai_tugas'] ?></td>
+                                    <td><?= $grade['nilai_uts'] ?></td>
+                                    <td><?= $grade['nilai_uas'] ?></td>
+                                    <td>
+                                        <a href="?edit=<?= $grade['id'] ?>" class="btn btn-warning btn-sm">Edit</a>
+                                        <a href="?delete=<?= $grade['id'] ?>" class="btn btn-danger btn-sm">Delete</a>
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                <?php
-                                $stmt = $pdo->query("
-                                    SELECT n.*, s.nama AS nama_siswa, mp.nama AS nama_mata_pelajaran 
-                                    FROM nilai n 
-                                    LEFT JOIN siswa s ON n.id_siswa = s.id 
-                                    LEFT JOIN mata_pelajaran mp ON n.id_mata_pelajaran = mp.id
-                                ");
-                                while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                                    echo "<tr>
-                                            <td>{$row['id']}</td>
-                                            <td>{$row['id_siswa']}</td>
-                                            <td>{$row['nama_siswa']}</td>
-                                            <td>{$row['id_mata_pelajaran']}</td>
-                                            <td>{$row['nama_mata_pelajaran']}</td>
-                                            <td>{$row['tahun_ajaran']}</td>
-                                            <td>{$row['kelas']}</td>
-                                            <td>{$row['nilai_tugas']}</td>
-                                            <td>{$row['nilai_ujian']}</td>
-                                            <td>
-                                                <a href='manage_grades.php?edit={$row['id']}' class='btn btn-warning btn-sm'>Edit</a>
-                                                <a href='manage_grades.php?delete={$row['id']}' class='btn btn-danger btn-sm'>Hapus</a>
-                                            </td>
-                                        </tr>";
-                                }
-                                ?>
-                            </tbody>
-                        </table>
-                    </div>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
                 </div>
-
             </main>
         </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
 </body>
 </html>
