@@ -12,8 +12,9 @@ $student_id = $user['id'];
 
 $stmt = $pdo->prepare("
     SELECT mp.nama AS mata_pelajaran, 
-           n.nilai_tugas AS nilai_tugas, 
-           n.nilai_ujian AS nilai_ujian
+           n.nilai_tugas, 
+           n.nilai_uts, 
+           n.nilai_uas
     FROM nilai n
     JOIN mata_pelajaran mp ON n.id_mata_pelajaran = mp.id
     WHERE n.id_siswa = ?
@@ -98,7 +99,8 @@ $grades = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     <tr>
                                         <th>Mata Pelajaran</th>
                                         <th>Nilai Tugas</th>
-                                        <th>Nilai Ujian</th>
+                                        <th>Nilai UTS</th>
+                                        <th>Nilai UAS</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -106,7 +108,8 @@ $grades = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                         <tr>
                                             <td><?= htmlspecialchars($grade['mata_pelajaran']) ?></td>
                                             <td><?= htmlspecialchars($grade['nilai_tugas']) ?></td>
-                                            <td><?= htmlspecialchars($grade['nilai_ujian']) ?></td>
+                                            <td><?= htmlspecialchars($grade['nilai_uts']) ?></td>
+                                            <td><?= htmlspecialchars($grade['nilai_uas']) ?></td>
                                         </tr>
                                     <?php endforeach; ?>
                                 </tbody>
