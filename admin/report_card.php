@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['siswa_id'])) {
     $stmt = $pdo->prepare("
         SELECT s.id AS siswa_id, s.nama AS siswa_nama, s.kelas,
                mp.id AS mata_pelajaran_id, mp.nama AS mata_pelajaran_nama,
-               n.nilai_tugas, n.nilai_ujian
+               n.nilai_tugas, n.nilai_uts, n.nilai_uas
         FROM siswa s
         LEFT JOIN nilai n ON s.id = n.id_siswa
         LEFT JOIN mata_pelajaran mp ON n.id_mata_pelajaran = mp.id
@@ -136,7 +136,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['siswa_id'])) {
                                         <th>ID Mata Pelajaran</th>
                                         <th>Nama Mata Pelajaran</th>
                                         <th>Nilai Tugas</th>
-                                        <th>Nilai Ujian</th>
+                                        <th>Nilai UTS</th>
+                                        <th>Nilai UAS</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -148,7 +149,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['siswa_id'])) {
                                             <td><?= htmlspecialchars($row['mata_pelajaran_id']) ?></td>
                                             <td><?= htmlspecialchars($row['mata_pelajaran_nama']) ?></td>
                                             <td><?= htmlspecialchars($row['nilai_tugas']) ?></td>
-                                            <td><?= htmlspecialchars($row['nilai_ujian']) ?></td>
+                                            <td><?= htmlspecialchars($row['nilai_uts']) ?></td>
+                                            <td><?= htmlspecialchars($row['nilai_uas']) ?></td>
                                         </tr>
                                     <?php endforeach; ?>
                                 </tbody>
