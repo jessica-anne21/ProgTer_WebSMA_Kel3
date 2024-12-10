@@ -111,11 +111,6 @@ $kelasOptions = $pdo->query("SELECT DISTINCT kelas FROM siswa")->fetchAll();
                                 <i class="fas fa-calendar"></i> Manage Schedule
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="report_card.php">
-                                <i class="fas fa-chart-bar"></i> Reports
-                            </a>
-                        </li>
                     </ul>
                 </div>
             </nav>
@@ -136,10 +131,6 @@ $kelasOptions = $pdo->query("SELECT DISTINCT kelas FROM siswa")->fetchAll();
                             <div class="col-md-6">
                                 <label for="nama" class="form-label">Nama Siswa</label>
                                 <input type="text" class="form-control" name="nama" placeholder="Nama Siswa" value="<?= $siswa['nama'] ?? '' ?>" required>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="kelas" class="form-label">Kelas</label>
-                                <input type="text" class="form-control" name="kelas" placeholder="Kelas" value="<?= $siswa['kelas'] ?? '' ?>" required>
                             </div>
                             <div class="col-md-6">
                                 <label for="alamat" class="form-label">Alamat</label>
@@ -180,7 +171,7 @@ $kelasOptions = $pdo->query("SELECT DISTINCT kelas FROM siswa")->fetchAll();
                     </div>
                 </div>
 
-                <div class="mb-4">
+                <!-- <div class="mb-4">
                     <form method="GET" class="mb-3">
                         <label for="kelas" class="form-label">Filter Berdasarkan Kelas</label>
                         <select class="form-select" name="kelas" onchange="this.form.submit()">
@@ -190,7 +181,7 @@ $kelasOptions = $pdo->query("SELECT DISTINCT kelas FROM siswa")->fetchAll();
                             <option value="12" <?= ($kelasFilter == '12') ? 'selected' : '' ?>>Kelas 12</option>
                         </select>
                     </form>
-                </div>
+                </div> -->
 
                 <div class="card">
                 <div class="card-header">
@@ -202,7 +193,6 @@ $kelasOptions = $pdo->query("SELECT DISTINCT kelas FROM siswa")->fetchAll();
                             <tr>
                                 <th>ID</th>
                                 <th>Nama</th>
-                                <th>Kelas</th>
                                 <th>Alamat</th>
                                 <th>Telepon</th>
                                 <th>Jenis Kelamin</th>
@@ -226,7 +216,6 @@ $kelasOptions = $pdo->query("SELECT DISTINCT kelas FROM siswa")->fetchAll();
                                 echo "<tr>
                                     <td>{$siswa['id']}</td> <!-- Display Student ID -->
                                     <td>{$siswa['nama']}</td>
-                                    <td>{$siswa['kelas']}</td>
                                     <td>{$siswa['alamat']}</td>
                                     <td>{$siswa['telepon']}</td>
                                     <td>{$siswa['jenis_kelamin']}</td>
