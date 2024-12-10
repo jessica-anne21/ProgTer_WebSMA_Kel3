@@ -119,11 +119,6 @@ $mataPelajaran = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <i class="fas fa-calendar"></i> Manage Schedule
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="report_card.php">
-                                <i class="fas fa-chart-bar"></i> Reports
-                            </a>
-                        </li>
                     </ul>
                 </div>
             </nav>
