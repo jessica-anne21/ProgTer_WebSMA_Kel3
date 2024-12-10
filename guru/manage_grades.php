@@ -6,7 +6,6 @@ if (!isset($_SESSION['user'])) {
     header('Location: ../login/login.php');
 }
 
-// Handle form submission for adding or updating grades
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $id = $_POST['id'] ?? null;
     $id_siswa = $_POST['id_siswa'];
@@ -27,7 +26,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     header('Location: manage_grades.php');
 }
 
-// Handle deletion
 if (isset($_GET['delete'])) {
     $id = $_GET['delete'];
     $stmt = $pdo->prepare("DELETE FROM nilai WHERE id = ?");
@@ -35,10 +33,8 @@ if (isset($_GET['delete'])) {
     header('Location: manage_grades.php');
 }
 
-// Fetch subjects
 $subjects = $pdo->query("SELECT id, nama FROM mata_pelajaran")->fetchAll(PDO::FETCH_ASSOC);
 
-// Fetch all grades without filtering by class
 $query = "
     SELECT n.*, s.nama AS nama_siswa, mp.nama AS nama_mata_pelajaran 
     FROM nilai n 
@@ -92,18 +88,8 @@ $grades = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <div class="position-sticky pt-3">
                     <ul class="nav flex-column">
                         <li class="nav-item">
-                            <a class="nav-link" href="admin_dashboard.php">
+                            <a class="nav-link" href="guru_dashboard.php">
                                 <i class="fas fa-home"></i> Dashboard
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="manage_students.php">
-                                <i class="fas fa-user-graduate"></i> Manage Students
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="manage_subjects.php">
-                                <i class="fas fa-book"></i> Manage Subjects
                             </a>
                         </li>
                         <li class="nav-item">
@@ -183,7 +169,6 @@ $grades = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     </div>
                 </div>
 
-                <!-- Grades Table Section -->
                 <div class="table-responsive">
                     <table class="table table-striped table-bordered">
                         <thead>
@@ -222,7 +207,9 @@ $grades = $stmt->fetchAll(PDO::FETCH_ASSOC);
             </main>
         </div>
     </div>
+
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+    
 </body>
 </html>
