@@ -50,16 +50,6 @@ $guru = $_SESSION['user'];
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="manage_students.php">
-                                <i class="fas fa-user-graduate"></i> Manage Students
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="manage_subjects.php">
-                                <i class="fas fa-book"></i> Manage Subjects
-                            </a>
-                        </li>
-                        <li class="nav-item">
                             <a class="nav-link" href="manage_grades.php">
                                 <i class="fas fa-chart-line"></i> Manage Grades
                             </a>
