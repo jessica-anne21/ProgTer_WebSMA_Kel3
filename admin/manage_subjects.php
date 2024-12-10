@@ -110,11 +110,7 @@ $subjects = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <i class="fas fa-calendar"></i> Manage Schedule
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="report_card.php">
-                                <i class="fas fa-chart-bar"></i> Reports
-                            </a>
-                        </li>
+
                     </ul>
                 </div>
             </nav>
@@ -138,7 +134,7 @@ $subjects = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <input type="text" class="form-control" name="nama" placeholder="Nama Mata Pelajaran" value="<?= $subject['nama'] ?? '' ?>" required>
                             </div>
                             <div class="col-md-6">
-                                <label for="guru_pengajar" class="form-label">Guru Pengajar</label>
+                                <label for="guru_pengajar" class="form-label">Guru Koordinator</label>
                                 <select class="form-select" name="guru_pengajar" required>
                                     <option value="" disabled <?= !isset($subject) ? 'selected' : '' ?>>Pilih Guru</option>
                                     <?php foreach ($teachers as $teacher): ?>
@@ -172,7 +168,7 @@ $subjects = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <tr>
                                     <th>ID</th>
                                     <th>Nama Mata Pelajaran</th>
-                                    <th>Guru Pengajar</th>
+                                    <th>Guru Koordinator</th>
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
