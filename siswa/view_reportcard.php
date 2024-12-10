@@ -71,7 +71,6 @@ $grades = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <i class="fas fa-chart-line"></i> View Grades
                             </a>
                         </li>
-                        </li>
                         <li class="nav-item">
                             <a class="nav-link active" href="view_reportcard.php">
                                 <i class="fas fa-chart-bar"></i> View Report Card
@@ -98,18 +97,20 @@ $grades = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <thead>
                                     <tr>
                                         <th>Mata Pelajaran</th>
-                                        <th>Nilai Tugas</th>
-                                        <th>Nilai UTS</th>
-                                        <th>Nilai UAS</th>
+                                        <th>Nilai Akhir</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <?php foreach ($grades as $grade): ?>
+                                    <?php foreach ($grades as $grade): 
+                                        // Kalkulasi Nilai Akhir
+                                        $nilai_tugas = $grade['nilai_tugas'] ?? 0;
+                                        $nilai_uts = $grade['nilai_uts'] ?? 0;
+                                        $nilai_uas = $grade['nilai_uas'] ?? 0;
+                                        $nilai_akhir = ($nilai_tugas * 0.5) + ($nilai_uts * 0.25) + ($nilai_uas * 0.25);
+                                    ?>
                                         <tr>
                                             <td><?= htmlspecialchars($grade['mata_pelajaran']) ?></td>
-                                            <td><?= htmlspecialchars($grade['nilai_tugas']) ?></td>
-                                            <td><?= htmlspecialchars($grade['nilai_uts']) ?></td>
-                                            <td><?= htmlspecialchars($grade['nilai_uas']) ?></td>
+                                            <td><?= htmlspecialchars(number_format($nilai_akhir, 2)) ?></td>
                                         </tr>
                                     <?php endforeach; ?>
                                 </tbody>
