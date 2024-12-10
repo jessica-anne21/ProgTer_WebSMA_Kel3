@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['siswa_id'])) {
     $stmt = $pdo->prepare("
         SELECT s.id AS siswa_id, s.nama AS siswa_nama, s.kelas,
                mp.id AS mata_pelajaran_id, mp.nama AS mata_pelajaran_nama,
-               n.nilai_tugas, n.nilai_ujian
+               n.nilai_tugas, n.nilai_uts, n.nilai_uas
         FROM siswa s
         LEFT JOIN nilai n ON s.id = n.id_siswa
         LEFT JOIN mata_pelajaran mp ON n.id_mata_pelajaran = mp.id
@@ -33,6 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['siswa_id'])) {
 <html lang="id">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Report Card</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
@@ -65,16 +66,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['siswa_id'])) {
                         <li class="nav-item">
                             <a class="nav-link" href="guru_dashboard.php">
                                 <i class="fas fa-home"></i> Dashboard
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="manage_students.php">
-                                <i class="fas fa-user-graduate"></i> Manage Students
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="manage_subjects.php">
-                                <i class="fas fa-book"></i> Manage Subjects
                             </a>
                         </li>
                         <li class="nav-item">
@@ -130,20 +121,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['siswa_id'])) {
                                         <th>Kelas</th>
                                         <th>ID Mata Pelajaran</th>
                                         <th>Nama Mata Pelajaran</th>
-                                        <th>Nilai Tugas</th>
-                                        <th>Nilai Ujian</th>
+                                        <th>Nilai Akhir</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <?php foreach ($siswa_nilai as $row): ?>
+                                    <?php foreach ($siswa_nilai as $row): 
+                                        $nilai_tugas = $row['nilai_tugas'] ?? 0;
+                                        $nilai_uts = $row['nilai_uts'] ?? 0;
+                                        $nilai_uas = $row['nilai_uas'] ?? 0;
+                                        $nilai_akhir = ($nilai_tugas * 0.5) + ($nilai_uts * 0.25) + ($nilai_uas * 0.25);
+                                    ?>
                                         <tr>
                                             <td><?= htmlspecialchars($row['siswa_id']) ?></td>
                                             <td><?= htmlspecialchars($row['siswa_nama']) ?></td>
                                             <td><?= htmlspecialchars($row['kelas']) ?></td>
                                             <td><?= htmlspecialchars($row['mata_pelajaran_id']) ?></td>
                                             <td><?= htmlspecialchars($row['mata_pelajaran_nama']) ?></td>
-                                            <td><?= htmlspecialchars($row['nilai_tugas']) ?></td>
-                                            <td><?= htmlspecialchars($row['nilai_ujian']) ?></td>
+                                            <td><?= htmlspecialchars(number_format($nilai_akhir, 2)) ?></td>
                                         </tr>
                                     <?php endforeach; ?>
                                 </tbody>
