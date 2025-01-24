@@ -24,7 +24,7 @@ Anggota :
 
     b. Role Guru : 
     - Guru Biasa 
-    Email : chris@gmail.com
+    Email : kylie@gmail.com
     Password : 12345
 
     - Guru Wali 
