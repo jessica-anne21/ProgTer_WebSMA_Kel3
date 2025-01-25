@@ -64,9 +64,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 <div class="login-container">
     <div class="login-card card">
-        <h2 class="card-title">Admin Login</h2>
+        <h2 class="card-title">Login Admin</h2>
         <?php if (isset($error)) : ?>
-            <div class="alert alert-danger text-center"><?= htmlspecialchars($error) ?></div>
+            <div class="alert alert-danger text-center"><?= ($error) ?></div>
         <?php endif; ?>
         <form action="" method="post">
             <div class="form-group mb-3">
