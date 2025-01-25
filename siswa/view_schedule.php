@@ -9,21 +9,24 @@ if (!isset($_SESSION['user'])) {
 
 $user = $_SESSION['user'];
 $student_id = $user['id'];
-$kelas = $user['kelas']; 
 
 $query_jadwal = "
-    SELECT j.hari, j.jam_mulai, j.jam_selesai, j.ruangan, mp.nama AS nama_mata_pelajaran, g.nama AS nama_guru
+    SELECT DISTINCT j.hari, j.jam_mulai, j.jam_selesai, j.ruangan, 
+           mp.nama AS nama_mata_pelajaran, g.nama AS nama_guru
     FROM jadwal j
     JOIN mata_pelajaran mp ON j.id_mata_pelajaran = mp.id
     JOIN guru g ON j.id_guru = g.id
-    WHERE j.kelas = :kelas
+    JOIN siswa_mapel sm ON sm.id_mata_pelajaran = mp.id
+    WHERE sm.id_siswa = :student_id
     ORDER BY FIELD(j.hari, 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'), j.jam_mulai
 ";
 
+
 $stmt_jadwal = $pdo->prepare($query_jadwal);
-$stmt_jadwal->bindParam(':kelas', $kelas, PDO::PARAM_STR); 
+$stmt_jadwal->bindParam(':student_id', $student_id, PDO::PARAM_INT);
 $stmt_jadwal->execute();
 $result_jadwal = $stmt_jadwal->fetchAll(PDO::FETCH_ASSOC);
+
 ?>
 
 <!DOCTYPE html>
@@ -89,7 +92,7 @@ $result_jadwal = $stmt_jadwal->fetchAll(PDO::FETCH_ASSOC);
                     <h1 class="h2">Jadwal Saya</h1>
                 </div>
 
-                <!-- Schedule Table -->
+                <!-- Tabel Jadwal -->
                 <div class="card">
                     <div class="card-header">
                         Daftar Jadwal
@@ -110,12 +113,12 @@ $result_jadwal = $stmt_jadwal->fetchAll(PDO::FETCH_ASSOC);
                                 <tbody>
                                 <?php foreach ($result_jadwal as $jadwal): ?>
                                         <tr>
-                                            <td><?= htmlspecialchars($jadwal['nama_mata_pelajaran']) ?></td>
-                                            <td><?= htmlspecialchars($jadwal['nama_guru']) ?></td> 
-                                            <td><?= htmlspecialchars($jadwal['hari']) ?></td>
-                                            <td><?= htmlspecialchars($jadwal['jam_mulai']) ?></td>
-                                            <td><?= htmlspecialchars($jadwal['jam_selesai']) ?></td>
-                                            <td><?= htmlspecialchars($jadwal['ruangan']) ?></td>
+                                            <td><?= ($jadwal['nama_mata_pelajaran']) ?></td>
+                                            <td><?= ($jadwal['nama_guru']) ?></td> 
+                                            <td><?= ($jadwal['hari']) ?></td>
+                                            <td><?= ($jadwal['jam_mulai']) ?></td>
+                                            <td><?= ($jadwal['jam_selesai']) ?></td>
+                                            <td><?= ($jadwal['ruangan']) ?></td>
                                         </tr>
                                     <?php endforeach; ?>
                                 </tbody>
