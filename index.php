@@ -1,12 +1,11 @@
 <?php include('header.php'); ?>
 
-<div class="d-flex flex-column min-vh-100">
+<div class="d-flex flex-column min-vh-100" style="min-height: 100vh;"> 
 
-    <!-- Bagian Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #001f3f;">
         <a class="navbar-brand" id="navbar-atas" href="#"><b>School Management System</b></a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent-333"
-            aria-controls="navbarSupportedContent-333" aria-expanded="false" aria-label="Toggle navigation">
+                aria-controls="navbarSupportedContent-333" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent-333">
@@ -14,35 +13,30 @@
             </ul>
         </div>
     </nav>
-    <!-- End Bagian Navbar -->
-
-    <div class="flex-grow-1 d-flex align-items-center py-5" style="background: linear-gradient(135deg, #001f3f 40%, #f7f9fc 100%);">
+    <div class="flex-grow-1 d-flex align-items-center py-5">
         <div class="container my-4">
             <div class="row align-items-center">
-                <!-- Welcome Text -->
-                <div class="col-lg-6 my-auto text-white">
+
+                <div class="col-lg-6 my-auto text-white text-center"> 
+                    <img src="images/logo1.png" width=150px height=150px class="mb-3"> 
                     <h1 class="display-3 font-weight-bold animate-text">Selamat Datang!</h1>
                     <p class="lead py-lg-4">
                         Jelajahi portal informasi Sekolah SMA dengan layanan untuk Admin, Guru, dan Siswa.
                     </p>
                 </div>
 
-                <!-- Circular Buttons -->
                 <div class="col-lg-6 d-flex justify-content-center mt-4 mt-lg-0">
                     <div class="text-center mx-3">
-                        <!-- Admin Button -->
                         <a href="admin/login.php" class="btn btn-primary btn-circle shadow-lg">
                             <i class="fa fa-user-shield"></i><br>Admin
                         </a>
                     </div>
                     <div class="text-center mx-3">
-                        <!-- Guru Button -->
                         <a href="guru/login.php" class="btn btn-success btn-circle shadow-lg">
                             <i class="fa fa-chalkboard-teacher"></i><br>Guru
                         </a>
                     </div>
                     <div class="text-center mx-3">
-                        <!-- Siswa Button -->
                         <a href="siswa/login.php" class="btn btn-info btn-circle shadow-lg">
                             <i class="fa fa-user-graduate"></i><br>Siswa
                         </a>
@@ -57,6 +51,16 @@
 </div>
 
 <style>
+
+    body {
+        background-image: url('images/bg.jpg');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        min-height: 100%; 
+    }
+
+    
     .btn {
         margin: 0;
     }
