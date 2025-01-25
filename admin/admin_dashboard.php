@@ -29,7 +29,7 @@ $total_subjects = $stmt_subjects->fetch(PDO::FETCH_ASSOC)['total_subjects'];
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-navy">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#"><b>Admin Dashboard</b></a>
+            <a class="navbar-brand" href="admin_dashboard.php"><b>Admin Dashboard</b></a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -52,9 +52,14 @@ $total_subjects = $stmt_subjects->fetch(PDO::FETCH_ASSOC)['total_subjects'];
             <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-dark sidebar collapse">
                 <div class="position-sticky pt-3">
                     <ul class="nav flex-column">
-                        <li class="nav-item">
+                    <li class="nav-item">
                             <a class="nav-link active" href="admin_dashboard.php">
                                 <i class="fas fa-home"></i> Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="manage_period.php">
+                                <i class="fas fa-calendar"></i> Manage Periods
                             </a>
                         </li>
                         <li class="nav-item">
@@ -73,18 +78,13 @@ $total_subjects = $stmt_subjects->fetch(PDO::FETCH_ASSOC)['total_subjects'];
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="manage_grades.php">
-                                <i class="fas fa-chart-line"></i> Manage Grades
-                            </a>
-                        </li>
-                        <li class="nav-item">
                             <a class="nav-link" href="manage_schedule.php">
                                 <i class="fas fa-calendar"></i> Manage Schedule
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="report_card.php">
-                                <i class="fas fa-chart-bar"></i> Reports
+                            <a class="nav-link" href="manage_classes.php">
+                                <i class="fas fa-chalkboard"></i> Manage Classes
                             </a>
                         </li>
                     </ul>
@@ -97,9 +97,7 @@ $total_subjects = $stmt_subjects->fetch(PDO::FETCH_ASSOC)['total_subjects'];
                     <h1 class="h2">Dashboard</h1>
                 </div>
 
-                <!-- Dashboard Summary Cards -->
                 <div class="row">
-                    <!-- Total Teachers -->
                     <div class="col-md-4">
                         <div class="card text-white bg-primary mb-3">
                             <div class="card-header">
@@ -112,7 +110,6 @@ $total_subjects = $stmt_subjects->fetch(PDO::FETCH_ASSOC)['total_subjects'];
                         </div>
                     </div>
 
-                    <!-- Total Students -->
                     <div class="col-md-4">
                         <div class="card text-white bg-success mb-3">
                             <div class="card-header">
@@ -125,7 +122,6 @@ $total_subjects = $stmt_subjects->fetch(PDO::FETCH_ASSOC)['total_subjects'];
                         </div>
                     </div>
 
-                    <!-- Total Subjects -->
                     <div class="col-md-4">
                         <div class="card text-white bg-warning mb-3">
                             <div class="card-header">
