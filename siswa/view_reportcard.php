@@ -86,11 +86,12 @@ $grades = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <h1 class="h2">Hasil Rapor Saya</h1>
                 </div>
 
-                <!-- Grades Table -->
+                <!-- Tabel Nilai -->
                 <div class="card">
                     <div class="card-header">
                         Hasil Rapor
                     </div>
+
                     <div class="card-body">
                         <?php if (!empty($grades)): ?>
                             <table class="table table-striped">
@@ -102,23 +103,24 @@ $grades = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 </thead>
                                 <tbody>
                                     <?php foreach ($grades as $grade): 
-                                        // Kalkulasi Nilai Akhir
                                         $nilai_tugas = $grade['nilai_tugas'] ?? 0;
                                         $nilai_uts = $grade['nilai_uts'] ?? 0;
                                         $nilai_uas = $grade['nilai_uas'] ?? 0;
                                         $nilai_akhir = ($nilai_tugas * 0.5) + ($nilai_uts * 0.25) + ($nilai_uas * 0.25);
                                     ?>
                                         <tr>
-                                            <td><?= htmlspecialchars($grade['mata_pelajaran']) ?></td>
-                                            <td><?= htmlspecialchars(number_format($nilai_akhir, 2)) ?></td>
+                                            <td><?= ($grade['mata_pelajaran']) ?></td>
+                                            <td><?= (number_format($nilai_akhir, 2)) ?></td>
                                         </tr>
                                     <?php endforeach; ?>
                                 </tbody>
                             </table>
+                            
                         <?php else: ?>
                             <p>Anda belum memiliki nilai untuk mata pelajaran apa pun.</p>
                         <?php endif; ?>
                     </div>
+
                 </div>
             </main>
         </div>
