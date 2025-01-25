@@ -87,7 +87,7 @@ $grades = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <h1 class="h2">Nilai Saya</h1>
                 </div>
 
-                <!-- Grades Table -->
+                <!-- Tabel Nilai -->
                 <div class="card">
                     <div class="card-header">
                         Daftar Nilai
@@ -106,10 +106,10 @@ $grades = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <tbody>
                                     <?php foreach ($grades as $grade): ?>
                                         <tr>
-                                            <td><?= htmlspecialchars($grade['mata_pelajaran']) ?></td>
-                                            <td><?= htmlspecialchars($grade['nilai_tugas']) ?></td>
-                                            <td><?= htmlspecialchars($grade['nilai_uts']) ?></td>
-                                            <td><?= htmlspecialchars($grade['nilai_uas']) ?></td>
+                                            <td><?= ($grade['mata_pelajaran']) ?></td>
+                                            <td><?= ($grade['nilai_tugas']) ?></td>
+                                            <td><?= ($grade['nilai_uts']) ?></td>
+                                            <td><?= ($grade['nilai_uas']) ?></td>
                                         </tr>
                                     <?php endforeach; ?>
                                 </tbody>
